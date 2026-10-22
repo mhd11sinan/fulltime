@@ -53,6 +53,20 @@ become a single command run in this folder after `git init` and the first commit
 
     gh repo create fulltime --public --source . --push
 
+## Automatic match updates
+
+`.github/workflows/update-matches.yml` runs every Friday at 06:00 UTC (11:30 IST). It fetches finished
+Champions League matches from football-data.org, appends any new ones to `index.html`, commits and pushes,
+and GitHub Pages redeploys. One-time setup:
+
+1. Register for a free API key at https://www.football-data.org/client/register. The key arrives by email.
+2. In the repo, go to **Settings > Secrets and variables > Actions > New repository secret**.
+   Name: `FOOTBALL_DATA_TOKEN`. Secret: your key. Click **Add secret**.
+3. To run it right away, go to **Actions > Update matches > Run workflow**.
+
+If a run fails with "Unrecognised club names", add the name to `ALIASES` in `scripts/update_matches.py`.
+GitHub emails you when a scheduled run fails.
+
 ## Checking it works
 
 - Open the Pages URL. The Matches tab should list 36 results.

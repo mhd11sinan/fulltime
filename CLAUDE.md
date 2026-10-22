@@ -12,6 +12,7 @@ Letterboxd-style site for football fans. Users log matches, rate them (0.5 to 5 
 - Single file: `index.html` (vanilla JS, no build step, no dependencies).
 - Per-user data lives in `localStorage` under key `fulltime.v1`.
 - The Friends tab uses Claude artifact runtime capabilities (`claude.use('db')`, `claude.use('user')`). These only exist when the page is hosted on claude.ai. Outside that, the code falls back to local-only mode and the Friends tab explains this. To run it elsewhere, replace that block (`initCaps`, `pushNow`, `removeShared`) with a real backend.
+- `RAW` is append-only: match ids are `'m'+(index+1)`, so never reorder or remove entries. `scripts/update_matches.py` appends finished matches from football-data.org; `.github/workflows/update-matches.yml` runs it every Friday 06:00 UTC (and on demand) using the `FOOTBALL_DATA_TOKEN` repository secret, then commits and pushes. If it fails on an unrecognised club name, add the name to `ALIASES` in the script.
 - All data from other users is sanitised by `clean()` before rendering and escaped with `esc()`. Keep that when changing the sync code.
 
 ## Data model
