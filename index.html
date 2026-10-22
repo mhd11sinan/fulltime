@@ -74,7 +74,7 @@ main{padding:36px 0 80px}
 .check input{width:18px;height:18px;accent-color:var(--accent)}
 
 /* match list */
-ul.list{list-style:none;margin:0;padding:0}
+ul.list,ol.list{list-style:none;margin:0;padding:0}
 .mrow{border-bottom:1px solid var(--line)}
 .mbtn{display:grid;grid-template-columns:104px 1fr 128px;align-items:center;gap:8px 12px;width:100%;background:none;border:0;padding:16px 4px;text-align:left}
 .mbtn:hover{background:var(--surface)}
@@ -194,7 +194,68 @@ a.btn{display:inline-block;text-decoration:none}
 .formerr.ok{color:var(--accent)}
 .sharelink{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
 .sharelink a{color:var(--accent);font-weight:700;word-break:break-all}
-.panel .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.panel .btns,.lhead .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* match rows as links, match page */
+a.mbtn{color:inherit;text-decoration:none}
+a.mbtn:hover{background:var(--surface)}
+.sc.vs{font-size:22px;color:var(--muted)}
+.tag{font-size:13px;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:2px 10px;font-weight:700}
+.heart{color:var(--muted);font-size:16px;line-height:1}
+.heart.on{color:var(--danger)}
+.mrow.ranked{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 10px}
+.lrk{font-family:var(--display);font-weight:800;font-size:30px;color:var(--accent);min-width:34px;text-align:right}
+.lctl{display:flex;gap:6px}
+.mhero{border-bottom:1px solid var(--line);padding-bottom:26px}
+.mmeta{color:var(--muted)}
+.mscore{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin-top:14px;font-family:var(--body);font-weight:500;font-size:clamp(18px,3.4vw,26px);line-height:1.2}
+.mscore .th{text-align:right}.mscore .win{font-weight:800}
+.sc.big{font-family:var(--display);font-weight:800;font-size:clamp(56px,12vw,96px);letter-spacing:.03em;line-height:1}
+.sc.big.vs{font-size:clamp(32px,7vw,48px)}
+.mactions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn[aria-pressed="true"]{border-color:var(--accent)}
+.who-link{color:var(--ink);font-weight:700;text-decoration:none}
+.take p{margin-top:4px;color:var(--muted);max-width:70ch}
+
+/* profile sections */
+.subnav{margin-top:22px;padding-bottom:4px}
+.subnav .chip{text-decoration:none}
+.subnav .chip[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.subhead{font-size:22px;margin:30px 0 4px}
+.dday{font-size:13px;color:var(--muted);min-width:96px}
+.mlink{color:var(--ink);font-weight:700;text-decoration:none}
+.mlink:hover,.stub-meta:hover{text-decoration:underline}
+a.stub-meta{text-decoration:none}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:8px}
+.lcard{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;color:var(--ink);text-decoration:none;min-height:110px}
+.lcard:hover{border-color:var(--accent)}
+.lname{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.05}
+.ldesc{color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lhead{margin-bottom:12px}
+.lhead h2{font-size:clamp(32px,6vw,44px)}
+.picks{display:flex;flex-direction:column;gap:8px}
+
+/* stats */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:12px;margin-top:26px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column}
+.tn{font-family:var(--display);font-weight:800;font-size:40px;line-height:1}
+.tl{color:var(--muted);font-size:14px;margin-top:4px}
+.vbars{display:flex;align-items:flex-end;gap:2px;height:120px;border-bottom:1px solid var(--line);margin-top:12px}
+.vb{position:relative;flex:1;height:100%;display:flex;align-items:flex-end;outline-offset:0}
+.vb span{display:block;width:100%;background:var(--accent);border-radius:4px 4px 0 0}
+.vb:hover span,.vb:focus-visible span{opacity:.75}
+.vb[data-tip]:hover::after,.vb[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:12px;padding:4px 8px;border-radius:5px;white-space:nowrap;z-index:3;pointer-events:none}
+.vaxis{display:flex;gap:2px;font-size:12px;color:var(--muted);margin-top:6px}
+.vaxis span{flex:1;text-align:center}
+.vaxis.ends{justify-content:space-between}
+.vaxis.ends span{flex:none}
+.hbars{display:grid;grid-template-columns:minmax(0,11rem) minmax(0,1fr) auto;gap:10px 12px;align-items:center}
+.hl{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ht{height:12px}
+.ht span{display:block;height:100%;background:var(--accent);border-radius:0 4px 4px 0}
+.hn{font-size:14px;color:var(--muted);min-width:2ch;text-align:right}
+@media (max-width:600px){.hbars{grid-template-columns:minmax(0,8rem) minmax(0,1fr) auto}.mrow.ranked{grid-template-columns:auto minmax(0,1fr)}.mrow.ranked .lctl{grid-column:2;padding-bottom:10px}}
 
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:50;max-width:calc(100vw - 32px);font-size:15px}
 @media (prefers-reduced-motion:no-preference){.toast{animation:fade .2s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}}
@@ -279,12 +340,17 @@ var RAW=[
  [3,'2026-10-21','Sporting CP',2,'LASK',3],
  [3,'2026-10-21','Real Betis',1,'Feyenoord',0]
 ];
+// Fixtures not played yet, rewritten on every run of scripts/update_matches.py: [md, 'YYYY-MM-DD', home, away]
+var UPCOMING=[
+];
 var BASE=RAW.map(function(r,i){return{id:'m'+(i+1),md:r[0],date:r[1],home:r[2],hs:r[3],away:r[4],as:r[5]}});
+var UP=UPCOMING.map(function(r){var m={md:r[0],date:r[1],home:r[2],away:r[3],hs:null,as:null,up:true};m.id='u_'+fkey(m);return m});
 var MODES={live:'Watched live',replay:'Watched the replay',attended:'Was at the match',highlights:'Highlights only'};
 var KEY='fulltime.v1';
 
 /* ---------- state ---------- */
-function blank(){return{logs:{},players:{},favM:[],favP:[],custom:[]}}
+function blank(){return{logs:{},players:{},favM:[],favP:[],custom:[],likes:[],watch:[],lists:[]}}
+var FKEY=/^\d{4}-\d\d-\d\d_[a-z0-9-]+_[a-z0-9-]+$/,LISTID=/^l[a-z0-9]{1,39}$/;
 function str(v,n){return typeof v==='string'?v.slice(0,n):''}
 function half(v){v=Number(v);return isFinite(v)?Math.max(0,Math.min(5,Math.round(v*2)/2)):0}
 function int(v){v=parseInt(v,10);return isFinite(v)?Math.max(0,Math.min(99,v)):0}
@@ -315,6 +381,13 @@ function clean(o){
   }
   if(Array.isArray(o.favM))out.favM=o.favM.slice(0,4).map(function(x){return str(x,40)});
   if(Array.isArray(o.favP))out.favP=o.favP.slice(0,4).map(function(x){return str(x,100)});
+  if(Array.isArray(o.likes))out.likes=o.likes.slice(0,2000).map(function(x){return str(x,40)}).filter(Boolean);
+  if(Array.isArray(o.watch))out.watch=o.watch.slice(0,500).filter(function(x){return typeof x==='string'&&x.length<=140&&FKEY.test(x)});
+  if(Array.isArray(o.lists)){
+    out.lists=o.lists.slice(0,50).filter(function(l){return l&&LISTID.test(l.id)}).map(function(l){
+      return{id:l.id,name:str(l.name,60)||'Untitled list',desc:str(l.desc,300),items:Array.isArray(l.items)?l.items.slice(0,100).map(function(x){return str(x,40)}).filter(Boolean):[],ts:Number(l.ts)||0};
+    });
+  }
   return out;
 }
 function load(){
@@ -322,7 +395,10 @@ function load(){
   return blank();
 }
 var S=load();
-var V={tab:'matches',filter:'all',logged:false,user:null};
+// match: match page id; psub/listId: own profile section and open list; user/pubSub/pubList: a public profile.
+var V={tab:'matches',filter:'all',logged:false,match:null,psub:'overview',listId:null,user:null,pubSub:'overview',pubList:null};
+var MS={id:null,loading:false,logs:null,likes:0,err:''}; // other fans' ratings on the open match page
+var NAVS=0; // in-app hash navigations, so Back knows whether history.back() stays on this site
 var D=null;
 var SB=null,USER=null,ME=null,BOOT=true; // Supabase client, signed-in user, their profile row, waiting for first auth event
 var PEOPLE={q:'',list:null,err:''};
@@ -344,12 +420,28 @@ function delPlayer(id){saveLocal();if(ME)remote(SB.from('player_ratings').delete
 function putCustom(c){saveLocal();if(ME)remote(SB.from('custom_matches').upsert(customRow(c)))}
 function delCustom(id){saveLocal();if(ME)remote(SB.from('custom_matches').delete().eq('user_id',ME.id).eq('id',id))}
 function putFavs(){saveLocal();if(ME)remote(SB.from('profiles').update({fav_matches:S.favM,fav_players:S.favP}).eq('id',ME.id))}
+function putLike(id){saveLocal();if(ME)remote(SB.from('match_likes').upsert({user_id:ME.id,match_id:id}))}
+function delLike(id){saveLocal();if(ME)remote(SB.from('match_likes').delete().eq('user_id',ME.id).eq('match_id',id))}
+function putWatch(k){saveLocal();if(ME)remote(SB.from('watchlist').upsert({user_id:ME.id,fixture:k}))}
+function delWatch(k){saveLocal();if(ME)remote(SB.from('watchlist').delete().eq('user_id',ME.id).eq('fixture',k))}
+function listRow(l){return{user_id:ME.id,id:l.id,name:l.name,description:l.desc,items:l.items,created_at:iso(l.ts),updated_at:iso()}}
+function putList(l){saveLocal();if(ME)remote(SB.from('lists').upsert(listRow(l)))}
+function delList(id){saveLocal();if(ME)remote(SB.from('lists').delete().eq('user_id',ME.id).eq('id',id))}
 
 /* ---------- helpers ---------- */
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function $(sel,root){return(root||document).querySelector(sel)}
 function allMatches(d){return BASE.concat(d.custom)}
-function matchById(id,d){var a=allMatches(d);for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null}
+function matchById(id,d){var a=id.charAt(0)==='u'?UP:allMatches(d);for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null}
+// A fixture's identity that survives it moving from UPCOMING to RAW (match ids are positional).
+function fkey(m){return m.date+'_'+slug(m.home)+'_'+slug(m.away)}
+function byKey(k,d){
+  var a=allMatches(d).concat(UP);
+  for(var i=0;i<a.length;i++)if(fkey(a[i])===k)return a[i];
+  return null;
+}
+function fmtTs(ts){try{return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}catch(e){return ''}}
+function newId(p){return p+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36)}
 function mdLabel(md){return md===9?'Knockouts':'Matchday '+md}
 function fmtDate(d){try{return new Date(d+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})}catch(e){return d}}
 function fill(i,v){return Math.max(0,Math.min(1,v-(i-1)))}
@@ -359,7 +451,7 @@ function starsHTML(v){
   return h+'</span>';
 }
 function slug(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
-function plural(n,w){return n+' '+w+(n===1?'':/(s|x|z|ch|sh)$/.test(w)?'es':'s')}
+function plural(n,w){return n+' '+(n===1?w:/[^aeiou]y$/.test(w)?w.slice(0,-1)+'ies':/(s|x|z|ch|sh)$/.test(w)?w+'es':w+'s')}
 var toastTimer;
 function toast(msg){
   var t=$('#toast');t.textContent=msg;t.hidden=false;
@@ -371,10 +463,11 @@ function teamOptions(sel){
 
 /* ---------- views ---------- */
 function render(){
-  document.querySelectorAll('nav [data-tab]').forEach(function(b){b.setAttribute('aria-current',b.dataset.tab===V.tab?'page':'false')});
+  var tab=V.match?'matches':V.tab;
+  document.querySelectorAll('nav [data-tab]').forEach(function(b){b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false')});
   renderAcct();
   var m=$('#main');
-  m.innerHTML=V.tab==='matches'?matchesView():V.tab==='players'?playersView():V.tab==='profile'?profileView():peopleView();
+  m.innerHTML=V.match?matchPage(V.match):V.tab==='matches'?matchesView():V.tab==='players'?playersView():V.tab==='profile'?profileView():peopleView();
 }
 function renderAcct(){
   var a=$('#acct');
@@ -383,31 +476,45 @@ function renderAcct(){
   a.innerHTML=(ME?'<button class="who" data-act="tab" data-tab="profile">@'+esc(ME.username)+'</button>':'')+'<button class="btn ghost tiny" data-act="sign-out">Sign out</button>';
 }
 
+function scoreHTML(m,cls){return m.up?'<span class="sc vs'+(cls||'')+'">vs</span>':'<span class="sc'+(cls||'')+'">'+m.hs+'–'+m.as+'</span>'}
+function matchTitle(m){return m.up?m.home+' v '+m.away:m.home+' '+m.hs+'–'+m.as+' '+m.away}
+// One row in any match list. d is whose ratings, likes and watchlist to show.
+function matchRow(m,d,o){
+  o=o||{};
+  var l=d.logs[m.id],liked=d.likes.indexOf(m.id)>=0,watching=d.watch.indexOf(fkey(m))>=0;
+  var hw=!m.up&&m.hs>m.as,aw=!m.up&&m.as>m.hs,right='';
+  if(m.up)right=watching?'<span class="tag">On watchlist</span>':'';
+  else right=(l?(l.rating?starsHTML(l.rating):'<span>Logged</span>'):(o.mine?'<span class="logit">Log</span>':''))+(liked?'<span class="heart on" role="img" aria-label="Liked">♥</span>':'');
+  var inner='<span class="mdate">'+esc(fmtDate(m.date))+'<br>'+esc(mdLabel(m.md))+'</span>'
+    +'<span class="mteams"><span class="th'+(hw?' win':'')+'">'+esc(m.home)+'</span>'+scoreHTML(m)+'<span class="ta'+(aw?' win':'')+'">'+esc(m.away)+'</span></span>'
+    +'<span class="mmine">'+right+'</span>';
+  var linkable=m.id.charAt(0)!=='c'||d===S;
+  var row=linkable?'<a class="mbtn" href="#/m/'+esc(m.id)+'" aria-label="'+esc(matchTitle(m)+', '+fmtDate(m.date))+'">'+inner+'</a>':'<div class="mbtn">'+inner+'</div>';
+  return '<li class="mrow'+(o.pre||o.post?' ranked':'')+'">'+(o.pre||'')+row+(o.post||'')+'</li>';
+}
+
 function matchesView(){
   var all=allMatches(S);
   var mds=[];all.forEach(function(m){if(mds.indexOf(m.md)<0)mds.push(m.md)});
   mds.sort(function(a,b){return a-b});
-  var list=all.slice();
-  if(V.filter!=='all')list=list.filter(function(m){return String(m.md)===V.filter});
-  if(V.logged)list=list.filter(function(m){return S.logs[m.id]});
-  list.sort(function(a,b){return b.date.localeCompare(a.date)||a.id.localeCompare(b.id)});
+  var up=V.filter==='up',list;
+  if(up)list=UP.slice().sort(function(a,b){return a.date.localeCompare(b.date)||a.home.localeCompare(b.home)});
+  else{
+    list=all.slice();
+    if(V.filter!=='all')list=list.filter(function(m){return String(m.md)===V.filter});
+    if(V.logged)list=list.filter(function(m){return S.logs[m.id]});
+    list.sort(function(a,b){return b.date.localeCompare(a.date)||a.id.localeCompare(b.id)});
+  }
   var h='<div class="pagehead"><h1>Champions League 2026/27</h1><p class="lede">Log a match, give it stars, say what you thought. Results here run through matchday 3. If something newer has been played, add it yourself.</p></div>';
   h+='<div class="toolbar"><div class="chips" role="group" aria-label="Filter by matchday"><button class="chip" data-act="filter" data-f="all" aria-pressed="'+(V.filter==='all')+'">All</button>';
   mds.forEach(function(md){h+='<button class="chip" data-act="filter" data-f="'+md+'" aria-pressed="'+(V.filter===String(md))+'">'+(md===9?'Knockouts':'MD '+md)+'</button>'});
-  h+='</div><span class="spacer"></span><label class="check"><input type="checkbox" data-act="toggle-logged"'+(V.logged?' checked':'')+'> Only matches I’ve logged</label><button class="btn ghost" data-act="add-match-open">Add a match</button></div>';
+  if(UP.length)h+='<button class="chip" data-act="filter" data-f="up" aria-pressed="'+up+'">Upcoming</button>';
+  h+='</div><span class="spacer"></span>'+(up?'':'<label class="check"><input type="checkbox" data-act="toggle-logged"'+(V.logged?' checked':'')+'> Only matches I’ve logged</label>')+'<button class="btn ghost" data-act="add-match-open">Add a match</button></div>';
+  if(up)h+='<p class="note" style="margin-bottom:6px">Open a fixture to add it to your watchlist. Once it’s played, it moves to the results and you can log it.</p>';
   if(!list.length){
-    h+='<p class="empty">'+(V.logged?'You haven’t logged a match here yet. Switch off the filter and pick one.':'No matches to show.')+'</p>';
+    h+='<p class="empty">'+(V.logged&&!up?'You haven’t logged a match here yet. Switch off the filter and pick one.':'No matches to show.')+'</p>';
   }else{
-    h+='<ul class="list">';
-    list.forEach(function(m){
-      var l=S.logs[m.id];
-      var hw=m.hs>m.as,aw=m.as>m.hs;
-      h+='<li class="mrow"><button class="mbtn" data-act="open-match" data-id="'+esc(m.id)+'" aria-label="'+esc(m.home+' '+m.hs+' '+m.as+' '+m.away)+'">'
-        +'<span class="mdate">'+esc(fmtDate(m.date))+'<br>'+esc(mdLabel(m.md))+'</span>'
-        +'<span class="mteams"><span class="th'+(hw?' win':'')+'">'+esc(m.home)+'</span><span class="sc">'+m.hs+'–'+m.as+'</span><span class="ta'+(aw?' win':'')+'">'+esc(m.away)+'</span></span>'
-        +'<span class="mmine">'+(l?(l.rating?starsHTML(l.rating):'<span>Reviewed</span>'):'<span class="logit">Log</span>')+'</span></button></li>';
-    });
-    h+='</ul>';
+    h+='<ul class="list">'+list.map(function(m){return matchRow(m,S,{mine:true})}).join('')+'</ul>';
   }
   return h;
 }
@@ -428,9 +535,109 @@ function playersView(){
   return h;
 }
 
-function stubHTML(m,l,ctl,idx,last){
+/* ---------- match page ---------- */
+function matchPage(id){
+  var m=matchById(id,S);
+  var h='<p style="margin-bottom:18px"><button class="link" data-act="back">Back</button></p>';
+  if(!m)return h+'<p class="empty">We couldn’t find that match. It may be one someone else added by hand.</p>';
+  var played=!m.up,l=S.logs[id],liked=S.likes.indexOf(id)>=0,watching=S.watch.indexOf(fkey(m))>=0;
+  var hw=played&&m.hs>m.as,aw=played&&m.as>m.hs;
+  h+='<div class="mhero"><p class="mmeta">'+esc(mdLabel(m.md))+' · '+esc(fmtDate(m.date))+(played?'':' · Not played yet')+'</p>'
+    +'<h1 class="mscore"><span class="th'+(hw?' win':'')+'">'+esc(m.home)+'</span>'+scoreHTML(m,' big')+'<span class="ta'+(aw?' win':'')+'">'+esc(m.away)+'</span></h1></div>';
+  h+='<div class="mactions">';
+  if(played){
+    h+='<button class="btn" data-act="open-match" data-id="'+esc(id)+'">'+(l?'Edit your log':'Log this match')+'</button>'
+      +'<button class="btn ghost" data-act="like" data-id="'+esc(id)+'" aria-pressed="'+liked+'"><span class="heart'+(liked?' on':'')+'" aria-hidden="true">'+(liked?'♥':'♡')+'</span> '+(liked?'Liked':'Like')+'</button>';
+  }
+  h+='<button class="btn ghost" data-act="watch" data-id="'+esc(id)+'" aria-pressed="'+watching+'">'+(watching?'✓ On your watchlist':'+ Watchlist')+'</button>';
+  if(played&&id.charAt(0)==='m')h+='<button class="btn ghost" data-act="add-to-list" data-id="'+esc(id)+'">Add to list</button>';
+  h+='</div>';
+  if(l){
+    h+='<section class="sect"><h2>Your log</h2><div class="diary-row"><div class="t">'+(l.rating?starsHTML(l.rating):'')+'<span class="note">'+esc(MODES[l.mode]||'')+'</span>'
+      +(l.ts?'<span class="note">Logged '+esc(fmtTs(l.ts))+'</span>':'')+'</div>'+(l.review?'<p>'+esc(l.review)+'</p>':'')+'</div></section>';
+  }
+  if(!played)return h+'<p class="note" style="margin-top:28px">Once it’s played you can log it, rate it and like it.</p>';
+  if(SB&&/^m\d+$/.test(id))h+=socialHTML(id);
+  else if(!SB)h+='<section class="sect"><h2>Fans’ ratings</h2><p class="empty">Ratings and reviews from other fans appear here once accounts are switched on.</p></section>';
+  return h;
+}
+function socialHTML(id){
+  var h='<section class="sect"><h2>Fans’ ratings</h2>';
+  if(MS.id!==id||MS.loading)return h+'<p class="empty">Loading…</p></section>';
+  if(MS.err)return h+'<p class="status err">'+esc(MS.err)+'</p></section>';
+  var rated=MS.logs.filter(function(x){return x.rating>0});
+  h+='<p class="note">'+plural(rated.length,'rating')+' · liked by '+plural(MS.likes,'fan')+'</p>';
+  if(rated.length)h+=ratingBars(rated.map(function(x){return x.rating}),'fan');
+  var revs=MS.logs.filter(function(x){return x.review});
+  h+='</section><section class="sect"><h2>Reviews</h2>';
+  if(!revs.length)return h+'<p class="empty">No reviews yet.'+(S.logs[id]&&S.logs[id].review?'':' Be the first: log it and say what you thought.')+'</p></section>';
+  revs.forEach(function(x){
+    h+='<div class="take"><a class="who-link" href="#/u/'+esc(x.user)+'">@'+esc(x.user)+'</a> '+(x.rating?starsHTML(x.rating):'')+' <span class="note">'+esc(MODES[x.mode]||'')+'</span><p>'+esc(x.review)+'</p></div>';
+  });
+  return h+'</section>';
+}
+
+/* ---------- charts ---------- */
+// Vertical bars. items: [{n, label, tip}]. ends: show only the first and last label.
+function vbars(items,ends){
+  var max=Math.max.apply(null,items.map(function(i){return i.n}))||1;
+  var h='<div class="vbars">';
+  items.forEach(function(i){
+    h+='<div class="vb" tabindex="0" role="img" aria-label="'+esc(i.tip)+'" data-tip="'+esc(i.tip)+'"><span class="'+(i.n?'':'zero')+'" style="height:'+(i.n?Math.max(3,i.n/max*100):0)+'%"></span></div>';
+  });
+  h+='</div><div class="vaxis'+(ends?' ends':'')+'" aria-hidden="true">';
+  if(ends)h+='<span>'+esc(items[0].label)+'</span><span>'+esc(items[items.length-1].label)+'</span>';
+  else items.forEach(function(i){h+='<span>'+esc(i.label)+'</span>'});
+  return h+'</div>';
+}
+// Horizontal bars with the count printed beside each one. items: [{n, label}]
+function hbars(items,unit){
+  var max=Math.max.apply(null,items.map(function(i){return i.n}))||1;
+  return '<div class="hbars">'+items.map(function(i){
+    return '<span class="hl">'+esc(i.label)+'</span><span class="ht" title="'+esc(i.label+': '+plural(i.n,unit))+'"><span style="width:'+(i.n?Math.max(1,i.n/max*100):0)+'%"></span></span><span class="hn">'+i.n+'</span>';
+  }).join('')+'</div>';
+}
+function ratingBars(ratings,unit){
+  var items=[];
+  for(var v=0.5;v<=5;v+=0.5){
+    var n=ratings.filter(function(r){return r===v}).length;
+    items.push({n:n,label:v===0.5?'½★':v+'★',tip:v+' stars: '+plural(n,unit)});
+  }
+  return vbars(items,true);
+}
+
+/* ---------- profiles ---------- */
+var SECTIONS=[['overview','Profile'],['diary','Diary'],['likes','Likes'],['watchlist','Watchlist'],['lists','Lists'],['stats','Stats']];
+// o: {isMe, name, extra, sub, listId, user}. Own profile navigates with buttons, public ones with links.
+function profileHTML(d,o){
+  var byId={};allMatches(d).forEach(function(m){byId[m.id]=m});
+  var logs=Object.keys(d.logs).filter(function(id){return byId[id]});
+  var rated=logs.filter(function(id){return d.logs[id].rating>0});
+  var avg=rated.length?rated.reduce(function(s,id){return s+d.logs[id].rating},0)/rated.length:0;
+  var nPlayers=Object.keys(d.players).length;
+  var h='<div class="phead"><h1>'+esc(o.name)+'</h1><p>'+plural(logs.length,'match')+' logged'+(rated.length?', averaging '+avg.toFixed(1)+' stars':'')+'. '+plural(nPlayers,'player')+' rated. '+plural(d.likes.length,'like')+'. '+plural(d.lists.length,'list')+'.</p>'+(o.extra||'')+'</div>';
+  h+='<div class="chips subnav" role="navigation" aria-label="Profile sections">';
+  SECTIONS.forEach(function(s){
+    var cur=o.sub===s[0]?' aria-current="page"':'';
+    h+=o.user?'<a class="chip" href="#/u/'+esc(o.user)+(s[0]==='overview'?'':'/'+s[0])+'"'+cur+'>'+s[1]+'</a>'
+      :'<button class="chip" data-act="psub" data-s="'+s[0]+'"'+cur+'>'+s[1]+'</button>';
+  });
+  h+='</div>';
+  var sub=o.sub;
+  if(sub==='diary')h+=diaryHTML(d,o,byId,200);
+  else if(sub==='likes')h+=likesHTML(d,o,byId);
+  else if(sub==='watchlist')h+=watchlistHTML(d,o);
+  else if(sub==='lists')h+=o.listId?listPageHTML(d,o,byId):listsHTML(d,o);
+  else if(sub==='stats')h+=statsHTML(d,byId);
+  else h+=overviewHTML(d,o,byId);
+  return h;
+}
+function subLink(o,sub,text){
+  return o.user?'<a class="link" href="#/u/'+esc(o.user)+'/'+sub+'">'+text+'</a>':'<button class="link" data-act="psub" data-s="'+sub+'">'+text+'</button>';
+}
+function stubHTML(m,l,ctl,idx){
   var hw=m.hs>m.as,aw=m.as>m.hs;
-  var h='<article class="stub"><div class="stub-main"><div class="stub-meta">'+esc(mdLabel(m.md))+', '+esc(fmtDate(m.date))+'</div>'
+  var h='<article class="stub"><div class="stub-main"><a class="stub-meta" href="#/m/'+esc(m.id)+'">'+esc(mdLabel(m.md))+', '+esc(fmtDate(m.date))+'</a>'
     +'<div class="stub-line'+(hw?' w':'')+'"><span>'+esc(m.home)+'</span><b>'+m.hs+'</b></div>'
     +'<div class="stub-line'+(aw?' w':'')+'"><span>'+esc(m.away)+'</span><b>'+m.as+'</b></div>';
   if(l&&l.review)h+='<p class="stub-rev">'+esc(l.review)+'</p>';
@@ -445,16 +652,9 @@ function stubHTML(m,l,ctl,idx,last){
   if(l)h+='<span class="mode">'+esc(MODES[l.mode]||'')+'</span>';
   return h+'</div></article>';
 }
-
-function profileHTML(d,isMe,name,extra){
-  var byId={};allMatches(d).forEach(function(m){byId[m.id]=m});
-  var logs=Object.keys(d.logs).filter(function(id){return byId[id]}).map(function(id){return[id,d.logs[id]]});
-  var rated=logs.filter(function(x){return x[1].rating>0});
-  var avg=rated.length?rated.reduce(function(s,x){return s+x[1].rating},0)/rated.length:0;
-  var players=Object.keys(d.players).map(function(k){return d.players[k]});
-  var h='<div class="phead"><h1>'+esc(name)+'</h1><p>'+plural(logs.length,'match')+' logged'+(rated.length?', averaging '+avg.toFixed(1)+' stars':'')+'. '+plural(players.length,'player')+' rated.</p>'+(extra||'')+'</div>';
-
-  h+='<section class="sect"><h2>Top four matches</h2><div class="tops">';
+function overviewHTML(d,o,byId){
+  var isMe=o.isMe;
+  var h='<section class="sect"><h2>Top four matches</h2><div class="tops">';
   var fm=d.favM.filter(function(id){return byId[id]}).slice(0,4);
   fm.forEach(function(id,i){h+=stubHTML(byId[id],d.logs[id],isMe,i)});
   if(isMe){for(var i=fm.length;i<4;i++)h+='<button class="empty-slot" data-act="go-matches">Pick a favourite match</button>'}
@@ -476,35 +676,115 @@ function profileHTML(d,isMe,name,extra){
     h+=isMe?'<p class="empty">Rate a player, then add them to your top four from the Players tab.</p>':'<p class="empty">No top players picked yet.</p>';
   }
   h+='</section>';
-
-  h+='<section class="sect"><h2>Diary</h2>';
-  logs.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0)});
-  if(!logs.length)h+='<p class="empty">'+(isMe?'Nothing logged yet. Open a match and give it some stars.':'Nothing logged yet.')+'</p>';
-  logs.slice(0,25).forEach(function(x){
-    var m=byId[x[0]],l=x[1];
-    h+='<div class="diary-row"><div class="t"><b>'+esc(m.home)+' '+m.hs+'–'+m.as+' '+esc(m.away)+'</b>'+(l.rating?starsHTML(l.rating):'')+'<span class="note">'+esc(MODES[l.mode]||'')+'</span></div>'+(l.review?'<p>'+esc(l.review)+'</p>':'')+'</div>';
-  });
-  h+='</section>';
+  h+='<section class="sect"><h2>Recent diary</h2>'+diaryHTML(d,o,byId,5,true)+'</section>';
   return h;
 }
+function diaryHTML(d,o,byId,limit,brief){
+  var logs=Object.keys(d.logs).filter(function(id){return byId[id]}).map(function(id){return[id,d.logs[id]]});
+  logs.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0)});
+  if(!logs.length)return '<p class="empty">'+(o.isMe?'Nothing logged yet. Open a match and give it some stars.':'Nothing logged yet.')+'</p>';
+  var h='';
+  logs.slice(0,limit).forEach(function(x){
+    var m=byId[x[0]],l=x[1],title=esc(matchTitle(m));
+    var linkable=m.id.charAt(0)!=='c'||o.isMe;
+    h+='<div class="diary-row"><div class="t">'+(l.ts?'<span class="dday">'+esc(fmtTs(l.ts))+'</span>':'')+(linkable?'<a class="mlink" href="#/m/'+esc(m.id)+'">'+title+'</a>':'<b>'+title+'</b>')
+      +(l.rating?starsHTML(l.rating):'')+(d.likes.indexOf(m.id)>=0?'<span class="heart on" role="img" aria-label="Liked">♥</span>':'')+'<span class="note">'+esc(MODES[l.mode]||'')+'</span></div>'+(l.review?'<p>'+esc(l.review)+'</p>':'')+'</div>';
+  });
+  if(brief&&logs.length>limit)h+='<p style="margin-top:14px">'+subLink(o,'diary','See all '+plural(logs.length,'entry'))+'</p>';
+  return h;
+}
+function likesHTML(d,o,byId){
+  var ms=d.likes.map(function(id){return byId[id]}).filter(Boolean);
+  if(!ms.length)return '<p class="empty">'+(o.isMe?'No likes yet. Open a match you loved and tap Like.':'No likes yet.')+'</p>';
+  return '<ul class="list">'+ms.map(function(m){return matchRow(m,d)}).join('')+'</ul>';
+}
+function watchlistHTML(d,o){
+  var ms=d.watch.map(function(k){return byKey(k,d)}).filter(Boolean);
+  if(!ms.length)return '<p class="empty">'+(o.isMe?'Your watchlist is empty. Find fixtures under Matches > Upcoming, or open any match and tap Watchlist.':'Nothing on the watchlist yet.')+'</p>';
+  var next=ms.filter(function(m){return m.up}).sort(function(a,b){return a.date.localeCompare(b.date)});
+  var done=ms.filter(function(m){return !m.up});
+  var h='';
+  if(next.length)h+='<h3 class="subhead">Coming up</h3><ul class="list">'+next.map(function(m){return matchRow(m,d)}).join('')+'</ul>';
+  if(done.length)h+='<h3 class="subhead">Already played</h3><ul class="list">'+done.map(function(m){return matchRow(m,d,{mine:o.isMe})}).join('')+'</ul>';
+  return h;
+}
+function listsHTML(d,o){
+  var h='';
+  if(o.isMe)h+='<div class="toolbar"><span class="spacer"></span><button class="btn" data-act="new-list">New list</button></div>';
+  if(!d.lists.length)return h+'<p class="empty">'+(o.isMe?'No lists yet. Make one, like “Greatest comebacks”, then add matches from their match pages.':'No lists yet.')+'</p>';
+  h+='<div class="lgrid">';
+  d.lists.forEach(function(l){
+    var inner='<span class="lname">'+esc(l.name)+'</span><span class="note">'+plural(l.items.length,'match')+'</span>'+(l.desc?'<span class="ldesc">'+esc(l.desc)+'</span>':'');
+    h+=o.user?'<a class="lcard" href="#/u/'+esc(o.user)+'/lists/'+esc(l.id)+'">'+inner+'</a>':'<button class="lcard" data-act="open-list" data-id="'+esc(l.id)+'">'+inner+'</button>';
+  });
+  return h+'</div>';
+}
+function listPageHTML(d,o,byId){
+  var l=d.lists.filter(function(x){return x.id===o.listId})[0];
+  var back=o.user?'<a class="link" href="#/u/'+esc(o.user)+'/lists">All lists</a>':'<button class="link" data-act="psub" data-s="lists">All lists</button>';
+  var h='<p style="margin:4px 0 18px">'+back+'</p>';
+  if(!l)return h+'<p class="empty">That list doesn’t exist any more.</p>';
+  h+='<div class="lhead"><h2>'+esc(l.name)+'</h2>'+(l.desc?'<p class="lede">'+esc(l.desc)+'</p>':'')+'<p class="note">'+plural(l.items.length,'match')+(o.user?' · by @'+esc(o.user):'')+'</p>';
+  if(o.isMe)h+='<div class="btns"><button class="btn ghost tiny" data-act="edit-list" data-id="'+esc(l.id)+'">Edit list</button></div>';
+  h+='</div>';
+  var items=l.items.map(function(id){return byId[id]}).filter(Boolean);
+  if(!items.length)return h+'<p class="empty">'+(o.isMe?'This list is empty. Open a match and tap Add to list.':'This list is empty.')+'</p>';
+  h+='<ol class="list">';
+  items.forEach(function(m,i){
+    var post=o.isMe?'<span class="lctl">'+(i>0?'<button class="btn ghost tiny" data-act="list-up" data-id="'+esc(m.id)+'" aria-label="Move up">Up</button>':'')+'<button class="btn danger tiny" data-act="list-remove" data-id="'+esc(m.id)+'" aria-label="Remove from list">Remove</button></span>':'';
+    h+=matchRow(m,d,{pre:'<span class="lrk" aria-hidden="true">'+(i+1)+'</span>',post:post||' '});
+  });
+  return h+'</ol>';
+}
+function statsHTML(d,byId){
+  var logs=Object.keys(d.logs).filter(function(id){return byId[id]}).map(function(id){return{m:byId[id],l:d.logs[id]}});
+  if(!logs.length)return '<p class="empty">Log some matches and stats will show up here.</p>';
+  var ratings=logs.map(function(x){return x.l.rating}).filter(function(r){return r>0});
+  var avg=ratings.length?(ratings.reduce(function(a,b){return a+b},0)/ratings.length).toFixed(1):'–';
+  var reviews=logs.filter(function(x){return x.l.review}).length;
+  var h='<div class="tiles">'
+    +tile(logs.length,'matches logged')+tile(avg,'average rating')+tile(reviews,reviews===1?'review':'reviews')
+    +tile(d.likes.length,d.likes.length===1?'like':'likes')+tile(d.lists.length,d.lists.length===1?'list':'lists')+'</div>';
+  h+='<section class="sect"><h2>Ratings</h2>'+(ratings.length?ratingBars(ratings,'match'):'<p class="empty">No star ratings yet.</p>')+'</section>';
+  h+='<section class="sect"><h2>How you watched</h2>'+hbars(Object.keys(MODES).map(function(k){
+    return{label:MODES[k],n:logs.filter(function(x){return x.l.mode===k}).length};
+  }),'match')+'</section>';
+  var clubs={};
+  logs.forEach(function(x){[x.m.home,x.m.away].forEach(function(t){clubs[t]=(clubs[t]||0)+1})});
+  var top=Object.keys(clubs).map(function(t){return{label:t,n:clubs[t]}}).sort(function(a,b){return b.n-a.n||a.label.localeCompare(b.label)}).slice(0,8);
+  h+='<section class="sect"><h2>Most-watched clubs</h2>'+hbars(top,'match')+'</section>';
+  var mds=[1,2,3,4,5,6,7,8];
+  if(logs.some(function(x){return x.m.md===9}))mds.push(9);
+  h+='<section class="sect"><h2>Matches by round</h2>'+vbars(mds.map(function(md){
+    var n=logs.filter(function(x){return x.m.md===md}).length;
+    return{n:n,label:md===9?'KO':'MD'+md,tip:mdLabel(md)+': '+plural(n,'match')};
+  }))+'</section>';
+  return h;
+}
+function tile(n,label){return '<div class="tile"><span class="tn">'+esc(n)+'</span><span class="tl">'+esc(label)+'</span></div>'}
+
 function profileUrl(u){return location.origin+location.pathname+'#/u/'+u}
 function importPanel(){
   var x=importable();
   if(!x)return '';
   var parts=[];
-  if(x.logs)parts.push(plural(x.logs,'match'));
-  if(x.players)parts.push(plural(x.players,'player'));
-  return '<section class="panel"><h2>Bring over your ratings</h2><p>Before you signed in, you rated '+parts.join(' and ')+' in this browser. Add them to your account? Anything already in your account stays as it is.</p>'
+  if(x.logs)parts.push(plural(x.logs,'match')+' logged');
+  if(x.players)parts.push(plural(x.players,'player')+' rated');
+  var what=parts.length?'you had '+parts.join(' and ')+' in this browser, plus any likes, lists and watchlist':'you had likes, lists or a watchlist in this browser';
+  return '<section class="panel"><h2>Bring over your ratings</h2><p>Before you signed in, '+what+'. Add them to your account? Anything already in your account stays as it is.</p>'
     +'<div class="btns"><button class="btn" data-act="import">Import them</button><button class="btn ghost" data-act="import-skip">Not now</button></div></section>';
 }
 function profileView(){
+  var o={isMe:true,sub:V.psub,listId:V.listId};
   if(ME){
-    var link='<p class="sharelink">Your public profile: <a href="#/u/'+esc(ME.username)+'">'+esc(profileUrl(ME.username))+'</a><button class="btn ghost tiny" data-act="copy-link">Copy link</button></p>';
-    return importPanel()+profileHTML(S,true,'@'+ME.username,link);
+    o.name='@'+ME.username;
+    o.extra='<p class="sharelink">Your public profile: <a href="#/u/'+esc(ME.username)+'">'+esc(profileUrl(ME.username))+'</a><button class="btn ghost tiny" data-act="copy-link">Copy link</button></p>';
+    return importPanel()+profileHTML(S,o);
   }
   var h='';
   if(SB&&!BOOT&&!USER)h='<section class="panel"><h2>Keep your ratings</h2><p>Right now your ratings are saved only in this browser. Sign in to keep them, use them on any device and share your profile.</p><div class="btns"><button class="btn" data-act="sign-in">Sign in or create an account</button></div></section>';
-  return h+profileHTML(S,true,'Your profile');
+  o.name='Your profile';
+  return h+profileHTML(S,o);
 }
 
 function peopleView(){
@@ -527,7 +807,7 @@ function publicView(){
   var h='<p style="margin-bottom:18px"><a class="link" href="#/people">All people</a></p>';
   if(PUB.err)return h+'<p class="empty">'+esc(PUB.err)+'</p>';
   if(!PUB.data)return h+'<p class="empty">Loading…</p>';
-  return h+profileHTML(PUB.data,false,'@'+PUB.name);
+  return h+profileHTML(PUB.data,{isMe:false,name:'@'+PUB.name,sub:V.pubSub,listId:V.pubList,user:PUB.name});
 }
 
 /* ---------- dialogs ---------- */
@@ -589,9 +869,63 @@ function openAddMatch(){
     +'<div class="actions"><button class="btn" data-act="add-match-save">Add match</button><button class="btn ghost" data-act="close">Cancel</button></div>');
 }
 
+function listById(id){return S.lists.filter(function(l){return l.id===id})[0]||null}
+function openListEdit(id){
+  var l=id?listById(id):null;
+  D={type:'list',id:l?l.id:null};
+  openDlg('<h2>'+(l?'Edit list':'New list')+'</h2><form id="list-form" novalidate>'
+    +'<label class="f" for="ln">Name</label><input type="text" id="ln" maxlength="60" placeholder="Greatest comebacks" value="'+esc(l?l.name:'')+'">'
+    +'<label class="f" for="ld">Description</label><textarea id="ld" maxlength="300" placeholder="What ties these matches together?">'+esc(l?l.desc:'')+'</textarea>'
+    +'<p class="formerr" id="ln-msg" role="status"></p><div class="actions"><button class="btn" type="submit">'+(l?'Save':'Create list')+'</button><button class="btn ghost" type="button" data-act="close">Cancel</button><span class="spacer"></span>'
+    +(l?'<button class="btn danger" type="button" data-act="del-list" data-id="'+esc(l.id)+'">Delete list</button>':'')+'</div></form>');
+  $('#ln').focus();
+}
+function submitList(){
+  var name=$('#ln').value.trim().slice(0,60),desc=$('#ld').value.trim().slice(0,300),msg=$('#ln-msg');
+  if(!name){msg.textContent='Give the list a name.';return}
+  var l=D.id?listById(D.id):null;
+  if(l){l.name=name;l.desc=desc}
+  else{
+    if(S.lists.length>=50){msg.textContent='You can have up to 50 lists.';return}
+    l={id:newId('l'),name:name,desc:desc,items:[],ts:Date.now()};
+    S.lists.unshift(l);
+  }
+  putList(l);closeDlg();
+  V.tab='profile';V.psub='lists';V.listId=l.id;V.match=null;clearRoute();
+  render();window.scrollTo(0,0);
+}
+function openAddToList(mid){
+  var m=matchById(mid,S);if(!m)return;
+  D={type:'addto',id:mid};
+  var h='<h2>Add to list</h2><p class="sub">'+esc(matchTitle(m))+'</p><form id="addto-form" novalidate>';
+  if(S.lists.length){
+    h+='<p class="f">Your lists</p><div class="picks">';
+    S.lists.forEach(function(l){
+      var has=l.items.indexOf(mid)>=0;
+      h+='<label class="check"><input type="checkbox" name="lst" value="'+esc(l.id)+'"'+(has?' checked':'')+(!has&&l.items.length>=100?' disabled':'')+'> '+esc(l.name)+' <span class="note">'+plural(l.items.length,'match')+'</span></label>';
+    });
+    h+='</div>';
+  }
+  h+='<label class="f" for="nl">'+(S.lists.length?'Or start a new list':'Start a new list')+'</label><input type="text" id="nl" maxlength="60" placeholder="List name">'
+    +'<p class="formerr" id="at-msg" role="status"></p><div class="actions"><button class="btn" type="submit">Save</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>';
+  openDlg(h);
+}
+function submitAddTo(){
+  var mid=D.id,name=$('#nl').value.trim().slice(0,60),added=0;
+  if(name&&S.lists.length>=50){$('#at-msg').textContent='You can have up to 50 lists.';return}
+  document.querySelectorAll('#addto-form input[name=lst]').forEach(function(c){
+    var l=listById(c.value);if(!l)return;
+    var i=l.items.indexOf(mid);
+    if(c.checked&&i<0&&l.items.length<100){l.items.push(mid);putList(l);added++}
+    else if(!c.checked&&i>=0){l.items.splice(i,1);putList(l)}
+  });
+  if(name){var nl={id:newId('l'),name:name,desc:'',items:[mid],ts:Date.now()};S.lists.unshift(nl);putList(nl);added++}
+  closeDlg();render();toast(added?'Saved to '+plural(added,'list'):'Lists updated');
+}
+
 /* ---------- actions ---------- */
 function move(arr,id,dir){var i=arr.indexOf(id);var j=i+dir;if(i<0||j<0||j>=arr.length)return;var t=arr[i];arr[i]=arr[j];arr[j]=t}
-function clearRoute(){if(location.hash)history.replaceState(null,'',location.pathname+location.search);V.user=null}
+function clearRoute(){if(location.hash)history.replaceState(null,'',location.pathname+location.search);V.user=null;V.match=null}
 
 document.addEventListener('click',function(e){
   var dlg=$('#dlg');
@@ -633,6 +967,8 @@ document.addEventListener('click',function(e){
       S.custom=S.custom.filter(function(c){return c.id!==d2});
       delCustom(d2);
       if(S.logs[d2]){delete S.logs[d2];delLog(d2)}
+      if(S.likes.indexOf(d2)>=0){S.likes=S.likes.filter(function(x){return x!==d2});delLike(d2)}
+      if(V.match===d2)clearRoute();
       S.favM=S.favM.filter(function(x){return x!==d2});if(S.favM.join()!==f2)putFavs();
       closeDlg();render();toast('Match deleted');break;}
     case 'add-match-save':{
@@ -672,6 +1008,31 @@ document.addEventListener('click',function(e){
     case 'favm-del':S.favM=S.favM.filter(function(x){return x!==id});putFavs();render();break;
     case 'favp-up':move(S.favP,id,-1);putFavs();render();break;
     case 'favp-del':S.favP=S.favP.filter(function(x){return x!==id});putFavs();render();break;
+    case 'back':if(NAVS>0)history.back();else{clearRoute();render()}break;
+    case 'like':{
+      var li=S.likes.indexOf(id);
+      if(li>=0){S.likes.splice(li,1);delLike(id)}else{S.likes.unshift(id);putLike(id)}
+      render();break;}
+    case 'watch':{
+      var wm=matchById(id,S);if(!wm)break;
+      var wk=fkey(wm),wi=S.watch.indexOf(wk);
+      if(wi>=0){S.watch.splice(wi,1);delWatch(wk);toast('Removed from your watchlist')}
+      else{S.watch.push(wk);putWatch(wk);toast('Added to your watchlist')}
+      render();break;}
+    case 'add-to-list':openAddToList(id);break;
+    case 'psub':V.psub=t.dataset.s;V.listId=null;render();break;
+    case 'new-list':openListEdit(null);break;
+    case 'edit-list':openListEdit(id);break;
+    case 'open-list':V.listId=id;render();window.scrollTo(0,0);break;
+    case 'del-list':{
+      var dl=listById(id);
+      if(!dl||!confirm('Delete “'+dl.name+'”? This can’t be undone.'))break;
+      S.lists=S.lists.filter(function(l){return l.id!==id});delList(id);
+      closeDlg();V.listId=null;render();toast('List deleted');break;}
+    case 'list-up':case 'list-remove':{
+      var ol=listById(V.listId);if(!ol)break;
+      if(act==='list-up')move(ol.items,id,-1);else ol.items=ol.items.filter(function(x){return x!==id});
+      putList(ol);render();break;}
     case 'sign-in':openAuth('signin');break;
     case 'sign-out':closeDlg();if(SB)SB.auth.signOut().then(function(r){if(r.error)toast('Couldn’t sign out. Try again.')});break;
     case 'auth-mode':openAuth(t.dataset.mode);break;
@@ -697,6 +1058,8 @@ document.addEventListener('submit',function(e){
   if(f==='auth-form'){e.preventDefault();submitAuth()}
   else if(f==='username-form'){e.preventDefault();submitUsername()}
   else if(f==='newpass-form'){e.preventDefault();submitNewPassword()}
+  else if(f==='list-form'){e.preventDefault();submitList()}
+  else if(f==='addto-form'){e.preventDefault();submitAddTo()}
 });
 $('#dlg').addEventListener('cancel',function(e){if(D&&D.type==='username')e.preventDefault()});
 $('#dlg').addEventListener('close',function(){D=null});
@@ -706,10 +1069,16 @@ function fetchUserData(p){
   return Promise.all([
     SB.from('match_logs').select('match_id,rating,mode,review,logged_at').eq('user_id',p.id).limit(2000),
     SB.from('player_ratings').select('player_id,name,team,rating,note').eq('user_id',p.id).limit(1000),
-    SB.from('custom_matches').select('id,md,match_date,home,home_goals,away,away_goals').eq('user_id',p.id).limit(200)
+    SB.from('custom_matches').select('id,md,match_date,home,home_goals,away,away_goals').eq('user_id',p.id).limit(200),
+    SB.from('match_likes').select('match_id').eq('user_id',p.id).order('created_at',{ascending:false}).limit(1000),
+    SB.from('watchlist').select('fixture').eq('user_id',p.id).order('added_at').limit(500),
+    SB.from('lists').select('id,name,description,items,created_at').eq('user_id',p.id).order('created_at',{ascending:false}).limit(50)
   ]).then(function(r){
     r.forEach(function(x){if(x.error)throw x.error});
-    var o={logs:{},players:{},favM:p.fav_matches||[],favP:p.fav_players||[],custom:[]};
+    var o={logs:{},players:{},favM:p.fav_matches||[],favP:p.fav_players||[],custom:[],
+      likes:r[3].data.map(function(x){return x.match_id}),
+      watch:r[4].data.map(function(x){return x.fixture}),
+      lists:r[5].data.map(function(l){return{id:l.id,name:l.name,desc:l.description,items:l.items,ts:Date.parse(l.created_at)}})};
     r[0].data.forEach(function(l){o.logs[l.match_id]={rating:l.rating,mode:l.mode,review:l.review,ts:Date.parse(l.logged_at)}});
     r[1].data.forEach(function(x){o.players[x.player_id]={name:x.name,team:x.team,rating:x.rating,note:x.note}});
     o.custom=r[2].data.map(function(c){return{id:c.id,md:c.md,date:c.match_date,home:c.home,hs:c.home_goals,away:c.away,as:c.away_goals}});
@@ -728,7 +1097,9 @@ function importable(){
   var d=load();
   var logs=Object.keys(d.logs).filter(function(id){return !S.logs[id]}).length;
   var players=Object.keys(d.players).filter(function(id){return !S.players[id]}).length;
-  return logs||players?{d:d,logs:logs,players:players}:null;
+  var extra=d.likes.some(function(id){return S.likes.indexOf(id)<0})||d.watch.some(function(k){return S.watch.indexOf(k)<0})
+    ||d.lists.some(function(l){return !listById(l.id)});
+  return logs||players||extra?{d:d,logs:logs,players:players}:null;
 }
 function setImported(){try{localStorage.setItem(KEY+'.imported.'+ME.id,'1')}catch(e){}}
 function doImport(){
@@ -739,7 +1110,14 @@ function doImport(){
   d.custom.forEach(function(c){if(!S.custom.some(function(o){return o.id===c.id})){S.custom.push(c);customs.push(customRow(c))}});
   if(!S.favM.length)S.favM=d.favM.slice(0,4);
   if(!S.favP.length)S.favP=d.favP.slice(0,4);
+  var likes=d.likes.filter(function(id){return S.likes.indexOf(id)<0});
+  var watch=d.watch.filter(function(k){return S.watch.indexOf(k)<0});
+  var lists=d.lists.filter(function(l){return !listById(l.id)}).slice(0,Math.max(0,50-S.lists.length));
+  S.likes=likes.concat(S.likes);S.watch=S.watch.concat(watch);S.lists=S.lists.concat(lists);
   Promise.all([
+    likes.length?SB.from('match_likes').upsert(likes.map(function(id){return{user_id:ME.id,match_id:id}})):null,
+    watch.length?SB.from('watchlist').upsert(watch.map(function(k){return{user_id:ME.id,fixture:k}})):null,
+    lists.length?SB.from('lists').upsert(lists.map(listRow)):null,
     customs.length?SB.from('custom_matches').upsert(customs):null,
     logs.length?SB.from('match_logs').upsert(logs):null,
     players.length?SB.from('player_ratings').upsert(players):null,
@@ -748,7 +1126,8 @@ function doImport(){
     var bad=rs.filter(function(r){return r&&r.error});
     if(bad.length){console.error(bad);toast('Some ratings couldn’t be imported. Try again.');reloadMe();return}
     setImported();render();
-    toast('Imported '+[logs.length?plural(logs.length,'match'):'',players.length?plural(players.length,'player'):''].filter(Boolean).join(' and ')+'.');
+    var parts=[logs.length?plural(logs.length,'match'):'',players.length?plural(players.length,'player'):'',likes.length?plural(likes.length,'like'):'',lists.length?plural(lists.length,'list'):''].filter(Boolean);
+    toast(parts.length?'Imported '+parts.join(', ')+'.':'Imported your watchlist.');
   });
 }
 
@@ -775,14 +1154,37 @@ function loadPublic(name){
   }).catch(function(e){console.error(e);if(PUB.name===name)PUB.err='Couldn’t load this profile. Try again in a moment.'})
   .then(function(){if(V.user===name)render()});
 }
-// Routes: #/u/<username> shows a public profile, #/people lists everyone.
+function loadMatchSocial(id){
+  MS={id:id,loading:true,logs:null,likes:0,err:''};
+  Promise.all([
+    SB.from('match_logs').select('rating,review,mode,profiles(username)').eq('match_id',id).order('logged_at',{ascending:false}).limit(500),
+    SB.from('match_likes').select('user_id',{count:'exact',head:true}).eq('match_id',id)
+  ]).then(function(r){
+    if(MS.id!==id)return;
+    if(r[0].error||r[1].error)throw r[0].error||r[1].error;
+    MS.logs=r[0].data.map(function(x){
+      var u=x.profiles&&x.profiles.username;
+      return{rating:half(x.rating),review:str(x.review,400),mode:MODES[x.mode]?x.mode:'live',user:/^[a-z0-9_]{3,20}$/.test(u||'')?u:null};
+    }).filter(function(x){return x.user});
+    MS.likes=r[1].count||0;MS.loading=false;
+  }).catch(function(e){console.error(e);if(MS.id===id){MS.loading=false;MS.err='Couldn’t load other fans’ ratings. Try again in a moment.'}})
+  .then(function(){if(V.match===id)render()});
+}
+// Routes: #/m/<id> match page, #/u/<username>[/<section>][/lists/<list id>] public profile, #/people everyone.
 function route(){
-  var m=location.hash.match(/^#\/u\/([A-Za-z0-9_]{3,20})$/);
-  if(m){V.tab='people';V.user=m[1].toLowerCase();loadPublic(V.user)}
-  else if(location.hash==='#/people'){V.tab='people';V.user=null;if(PEOPLE.list===null)loadPeople()}
-  else if(V.user)V.user=null;
-  else return false;
-  render();window.scrollTo(0,0);return true;
+  var h=location.hash,m,prevUser=V.user;
+  V.match=null;
+  if((m=h.match(/^#\/m\/([A-Za-z0-9_-]{1,140})$/))){
+    V.match=m[1];
+    if(SB&&/^m\d+$/.test(V.match))loadMatchSocial(V.match);
+  }else if((m=h.match(/^#\/u\/([A-Za-z0-9_]{3,20})(?:\/(diary|likes|watchlist|lists|stats))?(?:\/(l[a-z0-9]{1,39}))?$/))){
+    var name=m[1].toLowerCase();
+    V.tab='people';V.user=name;V.pubSub=m[2]||'overview';V.pubList=m[3]||null;
+    if(prevUser!==name||PUB.name!==name||PUB.err)loadPublic(name);
+  }else if(h==='#/people'){V.tab='people';V.user=null;if(PEOPLE.list===null)loadPeople()}
+  else V.user=null;
+  render();
+  if(!(prevUser&&prevUser===V.user))window.scrollTo(0,0);
 }
 
 function siteUrl(){return location.origin+location.pathname}
@@ -903,9 +1305,9 @@ function initAuth(){
   });
 }
 
-window.addEventListener('hashchange',route);
+window.addEventListener('hashchange',function(){NAVS++;route()});
 initAuth();
-if(!route())render();
+route();
 })();
 </script>
 </body>

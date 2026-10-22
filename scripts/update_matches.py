@@ -1,8 +1,9 @@
 """Add newly finished Champions League matches to index.html.
 
-Fetches finished matches from football-data.org and appends any that are
-missing to the RAW array. Existing entries are never changed or reordered,
-because match ids come from their position in RAW and saved ratings use them.
+Fetches the season's matches from football-data.org and appends finished ones
+that are missing to the RAW array. Existing entries are never changed or
+reordered, because match ids come from their position in RAW and saved ratings
+use them. Scheduled fixtures replace the UPCOMING array on every run.
 
 Usage:
     FOOTBALL_DATA_TOKEN=... python3 scripts/update_matches.py
@@ -19,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INDEX = os.path.join(ROOT, 'index.html')
 NOTES = os.path.join(ROOT, 'CLAUDE.md')
 SEASON = os.environ.get('SEASON', '2026')
-API = 'https://api.football-data.org/v4/competitions/CL/matches?season=%s&status=FINISHED' % SEASON
+API = 'https://api.football-data.org/v4/competitions/CL/matches?season=%s' % SEASON
 KNOCKOUTS = 9
 
 # football-data.org names that don't reduce to a site name on their own.
@@ -107,11 +108,14 @@ def main(args):
         seen.add((md, frozenset((h, a))) if md != KNOCKOUTS else (d, frozenset((h, a))))
 
     resolve = resolver(teams)
-    new, unknown = [], set()
+    new, upcoming, unknown = [], [], set()
     data = fetch(args)
     for m in sorted(data.get('matches', []), key=lambda m: (m['utcDate'], m['id'])):
-        if m.get('status') != 'FINISHED':
+        status = m.get('status')
+        if status not in ('FINISHED', 'SCHEDULED', 'TIMED'):
             continue
+        if not m['homeTeam'].get('name') or not m['awayTeam'].get('name'):
+            continue  # knockout tie whose teams aren't decided yet
         md = m['matchday'] if m.get('stage') == 'LEAGUE_STAGE' else KNOCKOUTS
         date = m['utcDate'][:10]
         home = resolve(m['homeTeam'].get('name'), m['homeTeam'].get('shortName'))
@@ -122,6 +126,9 @@ def main(args):
         key = (md, frozenset((home, away))) if md != KNOCKOUTS else (date, frozenset((home, away)))
         if key in seen:
             continue
+        if status != 'FINISHED':
+            upcoming.append((md, date, home, away))
+            continue
         seen.add(key)
         hs, as_ = goals(m['score'])
         new.append((md, date, home, hs, away, as_))
@@ -129,8 +136,24 @@ def main(args):
     if unknown:
         sys.exit('Unrecognised club names: %s. Add them to ALIASES in scripts/update_matches.py.'
                  % ', '.join(sorted(unknown)))
+
+    # UPCOMING is rewritten in full each run; RAW is only ever appended to.
+    up_block = 'var UPCOMING=[\n' + ',\n'.join(
+        ' [%d,%s,%s,%s]' % (md, js_str(d), js_str(h), js_str(a)) for md, d, h, a in upcoming) + ('\n' if upcoming else '') + '];'
+    old_up = re.search(r'var UPCOMING=\[\n.*?\];', html, re.S)
+    up_changed = old_up is not None and old_up.group(0) != up_block
+    if up_changed:
+        html = html[:old_up.start()] + up_block + html[old_up.end():]
+
     if not new:
-        print('No new results.')
+        if up_changed:
+            with open(INDEX, 'w', encoding='utf-8', newline='\n') as f:
+                f.write(html)
+            msg = 'Update upcoming fixtures (%d)' % len(upcoming)
+            print(msg)
+            write_output(msg)
+        else:
+            print('No new results.')
         return
 
     lines = ' [%d,%s,%s,%d,%s,%d]'
@@ -160,6 +183,10 @@ def main(args):
     for md, d, h, hs, a, as_ in new:
         print('%s  %s %d-%d %s  (%s)' % (d, h, hs, as_, a, label(md)))
     print(msg)
+    write_output(msg)
+
+
+def write_output(msg):
     out = os.environ.get('GITHUB_OUTPUT')
     if out:
         with open(out, 'a', encoding='utf-8') as f:
