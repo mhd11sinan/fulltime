@@ -32,9 +32,10 @@ ALIASES = {
     'sporting lisbon': 'Sporting CP',
     'atleti': 'Atlético Madrid',
     'psg': 'Paris Saint-Germain',
+    'pae aek': 'AEK Athens',
 }
 # Club-type words dropped before comparing names.
-STOP = {'fc', 'cf', 'afc', 'sc', 'sk', 'fk', 'kv', 'ac', 'as', 'ss', 'ssc', 'osc', 'bv', 'vfb',
+STOP = {'fc', 'cf', 'afc', 'sc', 'sk', 'fk', 'kv', 'ac', 'as', 'ss', 'ssc', 'osc', 'bv', 'vfb', 'pae',
         'club', 'de', 'cd', 'rc', 'racing', 'balompie', '1907', '09', 'calcio', 'futbol'}
 
 

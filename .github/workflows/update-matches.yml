@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 6 * * 5' # Fridays 06:00 UTC (11:30 IST), after each Tue-Thu matchday
   workflow_dispatch:
+  push: # rerun when the importer itself changes
+    branches: [main]
+    paths:
+      - scripts/update_matches.py
+      - .github/workflows/update-matches.yml
 
 permissions:
   contents: write
@@ -15,7 +20,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Fetch results and update index.html
         id: update
