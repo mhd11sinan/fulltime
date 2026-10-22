@@ -3,9 +3,8 @@
 Fulltime is a single static `index.html`, so GitHub Pages can host it for free.
 Your site will be at `https://<your-username>.github.io/fulltime/`.
 
-> The Friends tab only works when the page runs as a Claude artifact. On GitHub Pages
-> it falls back to local-only mode: ratings are saved in each visitor's browser and
-> are not shared. See CLAUDE.md, roadmap item 1, for adding a real backend.
+> Accounts and public profiles need a Supabase project; see [SUPABASE.md](SUPABASE.md).
+> Until `config.js` is filled in, ratings are saved only in each visitor's browser.
 
 ## Option A: upload in the browser (no Git needed)
 
@@ -71,4 +70,4 @@ GitHub emails you when a scheduled run fails.
 
 - Open the Pages URL. The Matches tab should list 36 results.
 - Rate a match, reload the page, and confirm the rating is still there.
-- The Friends tab should say that friend profiles need the Claude link. This is expected.
+- Until Supabase is set up, the People tab says accounts aren't set up yet. This is expected.

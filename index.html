@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
 <style>
 :root{
   color-scheme:light;
@@ -43,7 +45,7 @@ p{margin:0}
 
 /* header */
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--line)}
-header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px}
+header.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 16px;min-height:60px}
 .logo{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:.02em}
 nav{display:flex;gap:4px}
 nav button{background:none;border:0;border-bottom:3px solid transparent;padding:18px 10px 12px;color:var(--muted);font-weight:500}
@@ -104,7 +106,7 @@ ul.list{list-style:none;margin:0;padding:0}
 
 /* forms */
 label.f{display:block;font-weight:700;margin:16px 0 6px}
-input[type=text],input[type=date],input[type=number],select,textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
+input[type=text],input[type=email],input[type=password],input[type=search],input[type=date],input[type=number],select,textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
 textarea{min-height:96px;resize:vertical}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .addp{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:26px}
@@ -166,7 +168,7 @@ ol.ranks{list-style:none;margin:0;padding:0}
 .diary-row .t b{font-weight:700}
 .diary-row p{color:var(--muted);margin-top:4px;max-width:70ch}
 
-/* friends */
+/* people */
 .panel{border-left:4px solid var(--accent);padding:4px 0 4px 16px;margin-bottom:32px}
 .panel h2{font-size:28px;margin-bottom:6px}
 .frow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
@@ -174,6 +176,25 @@ ol.ranks{list-style:none;margin:0;padding:0}
 .status{margin-top:8px;font-size:14px;color:var(--muted)}
 .status.err{color:var(--danger)}
 .empty{padding:34px 0;color:var(--muted)}
+
+/* accounts */
+.acct{display:flex;align-items:center;gap:10px;font-size:14px}
+.acct .who{background:none;border:0;padding:0;font-weight:700;color:var(--ink)}
+@media (max-width:640px){
+  header.top .wrap{padding-top:8px}
+  .acct{order:1}
+  nav{order:2;width:100%;overflow-x:auto}
+}
+a.btn{display:inline-block;text-decoration:none}
+.btn.wide{width:100%}
+.or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px;margin:18px 0 0}
+.or::before,.or::after{content:"";flex:1;border-top:1px solid var(--line)}
+.formerr{margin-top:12px;font-size:14px;color:var(--danger)}
+.formerr:empty{display:none}
+.formerr.ok{color:var(--accent)}
+.sharelink{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.sharelink a{color:var(--accent);font-weight:700;word-break:break-all}
+.panel .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
 
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:50;max-width:calc(100vw - 32px);font-size:15px}
 @media (prefers-reduced-motion:no-preference){.toast{animation:fade .2s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}}
@@ -187,8 +208,9 @@ ol.ranks{list-style:none;margin:0;padding:0}
       <button data-act="tab" data-tab="matches">Matches</button>
       <button data-act="tab" data-tab="players">Players</button>
       <button data-act="tab" data-tab="profile">Profile</button>
-      <button data-act="tab" data-tab="friends">Friends</button>
+      <button data-act="tab" data-tab="people">People</button>
     </nav>
+    <div class="acct" id="acct"></div>
   </div>
 </header>
 <main><div class="wrap" id="main"></div></main>
@@ -262,18 +284,17 @@ var MODES={live:'Watched live',replay:'Watched the replay',attended:'Was at the 
 var KEY='fulltime.v1';
 
 /* ---------- state ---------- */
-function blank(){return{logs:{},players:{},favM:[],favP:[],custom:[],share:false}}
+function blank(){return{logs:{},players:{},favM:[],favP:[],custom:[]}}
 function str(v,n){return typeof v==='string'?v.slice(0,n):''}
 function half(v){v=Number(v);return isFinite(v)?Math.max(0,Math.min(5,Math.round(v*2)/2)):0}
 function int(v){v=parseInt(v,10);return isFinite(v)?Math.max(0,Math.min(99,v)):0}
 function clean(o){
   var out=blank();
   if(!o||typeof o!=='object')return out;
-  out.share=!!o.share;
   if(o.logs&&typeof o.logs==='object'){
     var n=0;
     Object.keys(o.logs).forEach(function(k){
-      if(n++>400)return;
+      if(n++>2000)return;
       var l=o.logs[k]||{};
       out.logs[str(k,40)]={rating:half(l.rating),mode:MODES[l.mode]?l.mode:'live',review:str(l.review,400),ts:Number(l.ts)||0};
     });
@@ -281,13 +302,13 @@ function clean(o){
   if(o.players&&typeof o.players==='object'){
     var m=0;
     Object.keys(o.players).forEach(function(k){
-      if(m++>300)return;
+      if(m++>1000)return;
       var p=o.players[k]||{};
       out.players[str(k,100)]={id:str(k,100),name:str(p.name,60),team:str(p.team,40),rating:half(p.rating),note:str(p.note,200)};
     });
   }
   if(Array.isArray(o.custom)){
-    out.custom=o.custom.slice(0,100).map(function(c){
+    out.custom=o.custom.slice(0,200).map(function(c){
       c=c||{};
       return{id:str(c.id,40),md:Math.max(1,Math.min(9,int(c.md)||1)),date:/^\d{4}-\d\d-\d\d$/.test(c.date)?c.date:'2026-01-01',home:str(c.home,40),hs:int(c.hs),away:str(c.away,40),as:int(c.as)};
     });
@@ -301,16 +322,28 @@ function load(){
   return blank();
 }
 var S=load();
-var V={tab:'matches',filter:'all',logged:false,friendId:null};
+var V={tab:'matches',filter:'all',logged:false,user:null};
 var D=null;
-var friends={},NAMES={};
-var DBH=null,UH=null,MYID=null,MYNAME='';
-var SYNC={err:false,msg:''};
+var SB=null,USER=null,ME=null,BOOT=true; // Supabase client, signed-in user, their profile row, waiting for first auth event
+var PEOPLE={q:'',list:null,err:''};
+var PUB={name:null,data:null,err:''};
 
-function persist(){
-  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-  syncSoon();
+/* ---------- storage: this browser when signed out, Supabase when signed in ---------- */
+function saveLocal(){if(!USER)try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function remote(q){
+  q.then(function(r){if(r.error){console.error(r.error);toast('Couldn’t save that. Check your connection and try again.')}});
 }
+function iso(ts){return new Date(ts||Date.now()).toISOString()}
+function logRow(id,l){return{user_id:ME.id,match_id:id,rating:l.rating,mode:l.mode,review:l.review,logged_at:iso(l.ts),updated_at:iso()}}
+function playerRow(p){return{user_id:ME.id,player_id:p.id,name:p.name,team:p.team,rating:p.rating,note:p.note}}
+function customRow(c){return{user_id:ME.id,id:c.id,md:c.md,match_date:c.date,home:c.home,home_goals:c.hs,away:c.away,away_goals:c.as}}
+function putLog(id){saveLocal();if(ME)remote(SB.from('match_logs').upsert(logRow(id,S.logs[id])))}
+function delLog(id){saveLocal();if(ME)remote(SB.from('match_logs').delete().eq('user_id',ME.id).eq('match_id',id))}
+function putPlayer(id){saveLocal();if(ME)remote(SB.from('player_ratings').upsert(playerRow(S.players[id])))}
+function delPlayer(id){saveLocal();if(ME)remote(SB.from('player_ratings').delete().eq('user_id',ME.id).eq('player_id',id))}
+function putCustom(c){saveLocal();if(ME)remote(SB.from('custom_matches').upsert(customRow(c)))}
+function delCustom(id){saveLocal();if(ME)remote(SB.from('custom_matches').delete().eq('user_id',ME.id).eq('id',id))}
+function putFavs(){saveLocal();if(ME)remote(SB.from('profiles').update({fav_matches:S.favM,fav_players:S.favP}).eq('id',ME.id))}
 
 /* ---------- helpers ---------- */
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -326,7 +359,7 @@ function starsHTML(v){
   return h+'</span>';
 }
 function slug(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
-function plural(n,w){return n+' '+w+(n===1?'':'s')}
+function plural(n,w){return n+' '+w+(n===1?'':/(s|x|z|ch|sh)$/.test(w)?'es':'s')}
 var toastTimer;
 function toast(msg){
   var t=$('#toast');t.textContent=msg;t.hidden=false;
@@ -338,9 +371,16 @@ function teamOptions(sel){
 
 /* ---------- views ---------- */
 function render(){
-  document.querySelectorAll('[data-tab]').forEach(function(b){b.setAttribute('aria-current',b.dataset.tab===V.tab?'page':'false')});
+  document.querySelectorAll('nav [data-tab]').forEach(function(b){b.setAttribute('aria-current',b.dataset.tab===V.tab?'page':'false')});
+  renderAcct();
   var m=$('#main');
-  m.innerHTML=V.tab==='matches'?matchesView():V.tab==='players'?playersView():V.tab==='profile'?profileView():friendsView();
+  m.innerHTML=V.tab==='matches'?matchesView():V.tab==='players'?playersView():V.tab==='profile'?profileView():peopleView();
+}
+function renderAcct(){
+  var a=$('#acct');
+  if(!SB||BOOT){a.innerHTML='';return}
+  if(!USER){a.innerHTML='<button class="btn tiny" data-act="sign-in">Sign in</button>';return}
+  a.innerHTML=(ME?'<button class="who" data-act="tab" data-tab="profile">@'+esc(ME.username)+'</button>':'')+'<button class="btn ghost tiny" data-act="sign-out">Sign out</button>';
 }
 
 function matchesView(){
@@ -406,13 +446,13 @@ function stubHTML(m,l,ctl,idx,last){
   return h+'</div></article>';
 }
 
-function profileHTML(d,isMe,name){
+function profileHTML(d,isMe,name,extra){
   var byId={};allMatches(d).forEach(function(m){byId[m.id]=m});
   var logs=Object.keys(d.logs).filter(function(id){return byId[id]}).map(function(id){return[id,d.logs[id]]});
   var rated=logs.filter(function(x){return x[1].rating>0});
   var avg=rated.length?rated.reduce(function(s,x){return s+x[1].rating},0)/rated.length:0;
   var players=Object.keys(d.players).map(function(k){return d.players[k]});
-  var h='<div class="phead"><h1>'+esc(name)+'</h1><p>'+plural(logs.length,'match')+' logged'+(rated.length?', averaging '+avg.toFixed(1)+' stars':'')+'. '+plural(players.length,'player')+' rated.</p></div>';
+  var h='<div class="phead"><h1>'+esc(name)+'</h1><p>'+plural(logs.length,'match')+' logged'+(rated.length?', averaging '+avg.toFixed(1)+' stars':'')+'. '+plural(players.length,'player')+' rated.</p>'+(extra||'')+'</div>';
 
   h+='<section class="sect"><h2>Top four matches</h2><div class="tops">';
   var fm=d.favM.filter(function(id){return byId[id]}).slice(0,4);
@@ -447,35 +487,47 @@ function profileHTML(d,isMe,name){
   h+='</section>';
   return h;
 }
-function profileView(){return profileHTML(S,true,MYNAME||'Your profile')}
+function profileUrl(u){return location.origin+location.pathname+'#/u/'+u}
+function importPanel(){
+  var x=importable();
+  if(!x)return '';
+  var parts=[];
+  if(x.logs)parts.push(plural(x.logs,'match'));
+  if(x.players)parts.push(plural(x.players,'player'));
+  return '<section class="panel"><h2>Bring over your ratings</h2><p>Before you signed in, you rated '+parts.join(' and ')+' in this browser. Add them to your account? Anything already in your account stays as it is.</p>'
+    +'<div class="btns"><button class="btn" data-act="import">Import them</button><button class="btn ghost" data-act="import-skip">Not now</button></div></section>';
+}
+function profileView(){
+  if(ME){
+    var link='<p class="sharelink">Your public profile: <a href="#/u/'+esc(ME.username)+'">'+esc(profileUrl(ME.username))+'</a><button class="btn ghost tiny" data-act="copy-link">Copy link</button></p>';
+    return importPanel()+profileHTML(S,true,'@'+ME.username,link);
+  }
+  var h='';
+  if(SB&&!BOOT&&!USER)h='<section class="panel"><h2>Keep your ratings</h2><p>Right now your ratings are saved only in this browser. Sign in to keep them, use them on any device and share your profile.</p><div class="btns"><button class="btn" data-act="sign-in">Sign in or create an account</button></div></section>';
+  return h+profileHTML(S,true,'Your profile');
+}
 
-function friendsView(){
-  if(V.friendId&&friends[V.friendId]){
-    return '<p style="margin-bottom:18px"><button class="link" data-act="back-friends">Back to friends</button></p>'+profileHTML(friends[V.friendId].data,false,NAMES[V.friendId]||'A friend');
-  }
-  var h='<div class="pagehead"><h1>Friends</h1><p class="lede">See how the people you know rated the same matches and who they put in their top four.</p></div>';
-  h+='<section class="panel"><h2>Share your profile</h2>';
-  if(!DBH){
-    h+='<p>Friend profiles work when you open this page from its Claude link while signed in. Right now your ratings are saved only in this browser.</p>';
-  }else{
-    h+='<label class="check"><input type="checkbox" id="share"'+(S.share?' checked':'')+'> Share my profile with everyone who can open this page</label>'
-      +'<p class="note" style="margin-top:6px">Your logs, reviews, player ratings and top fours become visible to them. Turn this off to remove your shared copy.</p>';
-    if(SYNC.msg)h+='<p class="status'+(SYNC.err?' err':'')+'">'+esc(SYNC.msg)+'</p>';
-  }
-  h+='</section>';
-  var ids=Object.keys(friends).sort(function(a,b){return(friends[b].updatedAt||0)-(friends[a].updatedAt||0)});
-  if(!ids.length){
-    h+='<p class="empty">'+(DBH?'No one has shared a profile yet. Send them this page’s link and ask them to turn on sharing.':'')+'</p>';
-  }else{
-    ids.forEach(function(id){
-      var d=friends[id].data;
-      var logs=Object.keys(d.logs).length;
-      var rated=Object.keys(d.logs).map(function(k){return d.logs[k].rating}).filter(function(r){return r>0});
-      var avg=rated.length?(rated.reduce(function(a,b){return a+b},0)/rated.length).toFixed(1):null;
-      h+='<div class="frow"><div><b>'+esc(NAMES[id]||'Someone')+'</b><br><span class="note">'+plural(logs,'match')+' logged'+(avg?', averaging '+avg+' stars':'')+'</span></div><button class="btn ghost" data-act="view-friend" data-id="'+esc(id)+'">View profile</button></div>';
-    });
-  }
-  return h;
+function peopleView(){
+  if(V.user)return publicView();
+  var h='<div class="pagehead"><h1>People</h1><p class="lede">Find other fans and see how they rated the season. Every profile is public.</p></div>';
+  if(!SB)return h+'<p class="empty">Accounts aren’t set up for this copy of Fulltime yet.</p>';
+  h+='<label class="f" for="people-q">Search by username</label><input type="search" id="people-q" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" value="'+esc(PEOPLE.q)+'">';
+  return h+'<div id="people-list" style="margin-top:8px">'+peopleListHTML()+'</div>';
+}
+function peopleListHTML(){
+  if(PEOPLE.err)return '<p class="status err">'+esc(PEOPLE.err)+'</p>';
+  if(PEOPLE.list===null)return '<p class="empty">Loading…</p>';
+  if(!PEOPLE.list.length)return '<p class="empty">'+(PEOPLE.q.trim()?'No one matches that username.':'No one has signed up yet.')+'</p>';
+  return PEOPLE.list.map(function(p){
+    var u=esc(p.username);
+    return '<div class="frow"><b>@'+u+(ME&&ME.username===p.username?' <span class="note">(you)</span>':'')+'</b><a class="btn ghost" href="#/u/'+u+'">View profile</a></div>';
+  }).join('');
+}
+function publicView(){
+  var h='<p style="margin-bottom:18px"><a class="link" href="#/people">All people</a></p>';
+  if(PUB.err)return h+'<p class="empty">'+esc(PUB.err)+'</p>';
+  if(!PUB.data)return h+'<p class="empty">Loading…</p>';
+  return h+profileHTML(PUB.data,false,'@'+PUB.name);
 }
 
 /* ---------- dialogs ---------- */
@@ -500,11 +552,6 @@ function openMatch(id){
   var isFav=S.favM.indexOf(id)>=0;
   D={type:'match',id:id,rating:l.rating||0};
   var full=!isFav&&S.favM.length>=4;
-  var takes='';
-  Object.keys(friends).forEach(function(fid){
-    var fl=friends[fid].data.logs[id];
-    if(fl&&(fl.rating||fl.review))takes+='<div class="take"><b>'+esc(NAMES[fid]||'Someone')+'</b> '+(fl.rating?starsHTML(fl.rating):'')+(fl.review?'<br><span class="note">'+esc(fl.review)+'</span>':'')+'</div>';
-  });
   var h='<h2>'+esc(m.home)+' '+m.hs+'–'+m.as+' '+esc(m.away)+'</h2><p class="sub">'+esc(mdLabel(m.md))+', '+esc(fmtDate(m.date))+'</p>'
     +'<label class="f">Your rating</label>'+rateHTML()
     +'<label class="f" for="f-mode">How did you see it?</label><select id="f-mode">'+Object.keys(MODES).map(function(k){return'<option value="'+k+'"'+(l.mode===k?' selected':'')+'>'+MODES[k]+'</option>'}).join('')+'</select>'
@@ -513,8 +560,7 @@ function openMatch(id){
     +(full?'<p class="note">Your top four is full. Remove one from your profile first.</p>':'')
     +'<div class="actions"><button class="btn" data-act="save-match">Save</button><button class="btn ghost" data-act="close">Cancel</button><span class="spacer"></span>'
     +(S.logs[id]?'<button class="btn danger" data-act="del-log">Remove from diary</button>':'')
-    +(id.charAt(0)==='c'?'<button class="btn danger" data-act="del-match">Delete match</button>':'')+'</div>'
-    +(takes?'<div class="takes"><h3>Friends’ takes</h3>'+takes+'</div>':'');
+    +(id.charAt(0)==='c'?'<button class="btn danger" data-act="del-match">Delete match</button>':'')+'</div>';
   openDlg(h);
 }
 
@@ -545,15 +591,16 @@ function openAddMatch(){
 
 /* ---------- actions ---------- */
 function move(arr,id,dir){var i=arr.indexOf(id);var j=i+dir;if(i<0||j<0||j>=arr.length)return;var t=arr[i];arr[i]=arr[j];arr[j]=t}
+function clearRoute(){if(location.hash)history.replaceState(null,'',location.pathname+location.search);V.user=null}
 
 document.addEventListener('click',function(e){
   var dlg=$('#dlg');
-  if(e.target===dlg){closeDlg();return}
+  if(e.target===dlg){if(!D||D.type!=='username')closeDlg();return}
   var t=e.target.closest('[data-act]');
   if(!t)return;
   var act=t.dataset.act,id=t.dataset.id;
   switch(act){
-    case 'tab':V.tab=t.dataset.tab;V.friendId=null;render();window.scrollTo(0,0);break;
+    case 'tab':V.tab=t.dataset.tab;clearRoute();if(V.tab==='people'&&PEOPLE.list===null)loadPeople();render();window.scrollTo(0,0);break;
     case 'filter':V.filter=t.dataset.f;render();break;
     case 'open-match':openMatch(id);break;
     case 'open-player':openPlayer(id);break;
@@ -564,32 +611,39 @@ document.addEventListener('click',function(e){
     case 'clearr':if(D){D.rating=0;paintRate()}break;
     case 'save-match':{
       var rating=D.rating,review=$('#f-review').value.trim().slice(0,400),mode=$('#f-mode').value,fav=$('#f-fav').checked;
-      var mid=D.id;
-      if(!rating&&!review){delete S.logs[mid];S.favM=S.favM.filter(function(x){return x!==mid})}
+      var mid=D.id,favs=S.favM.join();
+      if(!rating&&!review){delete S.logs[mid];S.favM=S.favM.filter(function(x){return x!==mid});delLog(mid)}
       else{
         var prev=S.logs[mid];
         S.logs[mid]={rating:rating,mode:mode,review:review,ts:prev?prev.ts:Date.now()};
         var has=S.favM.indexOf(mid)>=0;
         if(fav&&!has&&S.favM.length<4)S.favM.push(mid);
         if(!fav&&has)S.favM=S.favM.filter(function(x){return x!==mid});
+        putLog(mid);
       }
-      persist();closeDlg();render();toast('Saved to your diary');
+      if(S.favM.join()!==favs)putFavs();
+      closeDlg();render();toast('Saved to your diary');
       break;}
     case 'del-log':{
-      var d1=D.id;delete S.logs[d1];S.favM=S.favM.filter(function(x){return x!==d1});
-      persist();closeDlg();render();toast('Removed from your diary');break;}
+      var d1=D.id,f1=S.favM.join();delete S.logs[d1];S.favM=S.favM.filter(function(x){return x!==d1});
+      delLog(d1);if(S.favM.join()!==f1)putFavs();
+      closeDlg();render();toast('Removed from your diary');break;}
     case 'del-match':{
-      var d2=D.id;
-      S.custom=S.custom.filter(function(c){return c.id!==d2});delete S.logs[d2];S.favM=S.favM.filter(function(x){return x!==d2});
-      persist();closeDlg();render();toast('Match deleted');break;}
+      var d2=D.id,f2=S.favM.join();
+      S.custom=S.custom.filter(function(c){return c.id!==d2});
+      delCustom(d2);
+      if(S.logs[d2]){delete S.logs[d2];delLog(d2)}
+      S.favM=S.favM.filter(function(x){return x!==d2});if(S.favM.join()!==f2)putFavs();
+      closeDlg();render();toast('Match deleted');break;}
     case 'add-match-save':{
       var home=$('#a-home').value,away=$('#a-away').value,date=$('#a-date').value;
       var err=$('#a-err');
       if(!home||!away){err.textContent='Choose both clubs.';break}
       if(home===away){err.textContent='A club can’t play itself. Choose two different clubs.';break}
       if(!date){err.textContent='Pick the match date.';break}
-      S.custom.push({id:'c'+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36),md:parseInt($('#a-md').value,10),date:date,home:home,hs:int($('#a-hs').value),away:away,as:int($('#a-as').value)});
-      persist();closeDlg();render();toast('Match added');
+      var c={id:'c'+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36),md:parseInt($('#a-md').value,10),date:date,home:home,hs:int($('#a-hs').value),away:away,as:int($('#a-as').value)};
+      S.custom.push(c);putCustom(c);
+      closeDlg();render();toast('Match added');
       break;}
     case 'add-player':{
       var name=$('#pn').value.trim().slice(0,60),team=$('#pt').value;
@@ -598,95 +652,260 @@ document.addEventListener('click',function(e){
       var pid=slug(name)+'|'+slug(team);
       if(S.players[pid]){toast(name+' is already in your list.');break}
       S.players[pid]={id:pid,name:name,team:team,rating:0,note:''};
-      persist();render();toast(name+' added. Tap them to give a rating.');
+      putPlayer(pid);render();toast(name+' added. Tap them to give a rating.');
       break;}
     case 'save-player':{
       var p=S.players[D.id];if(!p)break;
+      var f3=S.favP.join();
       p.rating=D.rating;p.note=$('#f-note').value.trim().slice(0,200);
       var pf=$('#f-fav').checked,phas=S.favP.indexOf(p.id)>=0;
       if(pf&&!phas&&S.favP.length<4)S.favP.push(p.id);
       if(!pf&&phas)S.favP=S.favP.filter(function(x){return x!==p.id});
-      persist();closeDlg();render();toast('Saved');
+      putPlayer(p.id);if(S.favP.join()!==f3)putFavs();
+      closeDlg();render();toast('Saved');
       break;}
     case 'del-player':{
-      var d3=D.id;delete S.players[d3];S.favP=S.favP.filter(function(x){return x!==d3});
-      persist();closeDlg();render();toast('Player removed');break;}
-    case 'favm-left':move(S.favM,id,-1);persist();render();break;
-    case 'favm-del':S.favM=S.favM.filter(function(x){return x!==id});persist();render();break;
-    case 'favp-up':move(S.favP,id,-1);persist();render();break;
-    case 'favp-del':S.favP=S.favP.filter(function(x){return x!==id});persist();render();break;
-    case 'view-friend':V.friendId=id;render();window.scrollTo(0,0);break;
-    case 'back-friends':V.friendId=null;render();break;
+      var d3=D.id,f4=S.favP.join();delete S.players[d3];S.favP=S.favP.filter(function(x){return x!==d3});
+      delPlayer(d3);if(S.favP.join()!==f4)putFavs();
+      closeDlg();render();toast('Player removed');break;}
+    case 'favm-left':move(S.favM,id,-1);putFavs();render();break;
+    case 'favm-del':S.favM=S.favM.filter(function(x){return x!==id});putFavs();render();break;
+    case 'favp-up':move(S.favP,id,-1);putFavs();render();break;
+    case 'favp-del':S.favP=S.favP.filter(function(x){return x!==id});putFavs();render();break;
+    case 'sign-in':openAuth('signin');break;
+    case 'sign-out':closeDlg();if(SB)SB.auth.signOut().then(function(r){if(r.error)toast('Couldn’t sign out. Try again.')});break;
+    case 'auth-mode':openAuth(t.dataset.mode);break;
+    case 'auth-google':googleSignIn();break;
+    case 'import':doImport();break;
+    case 'import-skip':setImported();render();break;
+    case 'copy-link':
+      if(navigator.clipboard)navigator.clipboard.writeText(profileUrl(ME.username)).then(function(){toast('Link copied')},function(){toast('Couldn’t copy. Select the link and copy it instead.')});
+      break;
   }
 });
 document.addEventListener('change',function(e){
   var t=e.target;
-  if(t.dataset&&t.dataset.act==='toggle-logged'){V.logged=t.checked;render();return}
-  if(t.id==='share'){
-    S.share=t.checked;
-    try{localStorage.setItem(KEY,JSON.stringify(S))}catch(x){}
-    if(S.share){SYNC={err:false,msg:'Sharing is on.'};pushNow()}
-    else{SYNC={err:false,msg:'Sharing is off.'};removeShared()}
-    render();
-  }
+  if(t.dataset&&t.dataset.act==='toggle-logged'){V.logged=t.checked;render()}
 });
+var qTimer;
+document.addEventListener('input',function(e){
+  if(e.target.id!=='people-q')return;
+  PEOPLE.q=e.target.value;clearTimeout(qTimer);qTimer=setTimeout(loadPeople,250);
+});
+document.addEventListener('submit',function(e){
+  var f=e.target.id;
+  if(f==='auth-form'){e.preventDefault();submitAuth()}
+  else if(f==='username-form'){e.preventDefault();submitUsername()}
+  else if(f==='newpass-form'){e.preventDefault();submitNewPassword()}
+});
+$('#dlg').addEventListener('cancel',function(e){if(D&&D.type==='username')e.preventDefault()});
 $('#dlg').addEventListener('close',function(){D=null});
 
-/* ---------- friends sync (only when the page runs inside Claude with db + user) ---------- */
-var syncTimer;
-function pubPayload(){return JSON.stringify({logs:S.logs,players:S.players,favM:S.favM,favP:S.favP,custom:S.custom})}
-function syncSoon(){
-  if(!DBH||!S.share||!MYID)return;
-  clearTimeout(syncTimer);syncTimer=setTimeout(pushNow,900);
-}
-function pushNow(){
-  if(!DBH||!MYID)return;
-  DBH.doc('profiles/'+MYID).set({payload:pubPayload(),updatedAt:Date.now()}).then(function(){
-    SYNC={err:false,msg:'Your shared profile is up to date.'};if(V.tab==='friends'&&!V.friendId)render();
-  }).catch(function(){
-    SYNC={err:true,msg:'Couldn’t save your shared profile. You may have view-only access to this page.'};if(V.tab==='friends'&&!V.friendId)render();
+/* ---------- accounts and public profiles (Supabase) ---------- */
+function fetchUserData(p){
+  return Promise.all([
+    SB.from('match_logs').select('match_id,rating,mode,review,logged_at').eq('user_id',p.id).limit(2000),
+    SB.from('player_ratings').select('player_id,name,team,rating,note').eq('user_id',p.id).limit(1000),
+    SB.from('custom_matches').select('id,md,match_date,home,home_goals,away,away_goals').eq('user_id',p.id).limit(200)
+  ]).then(function(r){
+    r.forEach(function(x){if(x.error)throw x.error});
+    var o={logs:{},players:{},favM:p.fav_matches||[],favP:p.fav_players||[],custom:[]};
+    r[0].data.forEach(function(l){o.logs[l.match_id]={rating:l.rating,mode:l.mode,review:l.review,ts:Date.parse(l.logged_at)}});
+    r[1].data.forEach(function(x){o.players[x.player_id]={name:x.name,team:x.team,rating:x.rating,note:x.note}});
+    o.custom=r[2].data.map(function(c){return{id:c.id,md:c.md,date:c.match_date,home:c.home,hs:c.home_goals,away:c.away,as:c.away_goals}});
+    return clean(o);
   });
 }
-function removeShared(){
-  if(!DBH||!MYID)return;
-  DBH.doc('profiles/'+MYID).delete().catch(function(){
-    SYNC={err:true,msg:'Couldn’t remove your shared copy. Try again in a moment.'};render();
-  });
-}
-function resolveNames(){
-  var ids=Object.keys(friends);
-  if(!ids.length||!UH)return Promise.resolve();
-  return UH.profiles(ids).then(function(p){ids.forEach(function(i){NAMES[i]=(p[i]&&p[i].name)||'Someone'})}).catch(function(){});
-}
-function initCaps(){
-  if(!window.claude||typeof claude.use!=='function')return;
-  Promise.all([claude.use('db'),claude.use('user')]).then(function(r){
-    if(!r[0]||!r[1])return;
-    DBH=r[0];UH=r[1];
-    return UH.id().then(function(id){
-      if(!id){DBH=null;return}
-      MYID=id;
-      return UH.me().then(function(me){MYNAME=(me&&me.name)||''}).catch(function(){}).then(function(){
-        DBH.collection('profiles').onSnapshot(function(snap){
-          var next={};
-          snap.docs.forEach(function(doc){
-            if(doc.id===MYID)return;
-            var dt=doc.data()||{};
-            try{next[doc.id]={data:clean(JSON.parse(dt.payload)),updatedAt:Number(dt.updatedAt)||0}}catch(e){}
-          });
-          friends=next;
-          if(V.friendId&&!friends[V.friendId])V.friendId=null;
-          resolveNames().then(function(){if(!D)render()});
-        },function(){SYNC={err:true,msg:'Couldn’t load friends’ profiles.'};render()});
-        if(S.share)pushNow();
-        render();
-      });
-    });
-  }).catch(function(){});
+function reloadMe(){
+  var me=ME;if(!me)return;
+  fetchUserData(me).then(function(d){if(ME===me){S=d;render()}}).catch(function(e){console.error(e)});
 }
 
-render();
-initCaps();
+// Ratings saved in this browser before signing in, not yet in the account.
+function importable(){
+  if(!ME)return null;
+  try{if(localStorage.getItem(KEY+'.imported.'+ME.id))return null}catch(e){}
+  var d=load();
+  var logs=Object.keys(d.logs).filter(function(id){return !S.logs[id]}).length;
+  var players=Object.keys(d.players).filter(function(id){return !S.players[id]}).length;
+  return logs||players?{d:d,logs:logs,players:players}:null;
+}
+function setImported(){try{localStorage.setItem(KEY+'.imported.'+ME.id,'1')}catch(e){}}
+function doImport(){
+  var x=importable();if(!x)return;
+  var d=x.d,logs=[],players=[],customs=[];
+  Object.keys(d.logs).forEach(function(id){if(!S.logs[id]){S.logs[id]=d.logs[id];logs.push(logRow(id,d.logs[id]))}});
+  Object.keys(d.players).forEach(function(id){if(!S.players[id]){S.players[id]=d.players[id];players.push(playerRow(d.players[id]))}});
+  d.custom.forEach(function(c){if(!S.custom.some(function(o){return o.id===c.id})){S.custom.push(c);customs.push(customRow(c))}});
+  if(!S.favM.length)S.favM=d.favM.slice(0,4);
+  if(!S.favP.length)S.favP=d.favP.slice(0,4);
+  Promise.all([
+    customs.length?SB.from('custom_matches').upsert(customs):null,
+    logs.length?SB.from('match_logs').upsert(logs):null,
+    players.length?SB.from('player_ratings').upsert(players):null,
+    SB.from('profiles').update({fav_matches:S.favM,fav_players:S.favP}).eq('id',ME.id)
+  ]).then(function(rs){
+    var bad=rs.filter(function(r){return r&&r.error});
+    if(bad.length){console.error(bad);toast('Some ratings couldn’t be imported. Try again.');reloadMe();return}
+    setImported();render();
+    toast('Imported '+[logs.length?plural(logs.length,'match'):'',players.length?plural(players.length,'player'):''].filter(Boolean).join(' and ')+'.');
+  });
+}
+
+var peopleSeq=0;
+function loadPeople(){
+  if(!SB)return;
+  var seq=++peopleSeq,q=PEOPLE.q.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
+  var query=SB.from('profiles').select('username').order('created_at',{ascending:false}).limit(50);
+  if(q)query=query.ilike('username','%'+q.replace(/_/g,'\\_')+'%');
+  query.then(function(r){
+    if(seq!==peopleSeq)return;
+    PEOPLE.err=r.error?'Couldn’t load people. Try again in a moment.':'';
+    PEOPLE.list=r.error?null:r.data;
+    var el=$('#people-list');if(el)el.innerHTML=peopleListHTML();
+  });
+}
+function loadPublic(name){
+  PUB={name:name,data:null,err:''};
+  if(!SB){PUB.err='Accounts aren’t set up for this copy of Fulltime yet.';return}
+  SB.from('profiles').select('id,username,fav_matches,fav_players').eq('username',name).maybeSingle().then(function(r){
+    if(r.error)throw r.error;
+    if(!r.data){if(PUB.name===name)PUB.err='There’s no one called @'+name+'.';return}
+    return fetchUserData(r.data).then(function(d){if(PUB.name===name)PUB.data=d});
+  }).catch(function(e){console.error(e);if(PUB.name===name)PUB.err='Couldn’t load this profile. Try again in a moment.'})
+  .then(function(){if(V.user===name)render()});
+}
+// Routes: #/u/<username> shows a public profile, #/people lists everyone.
+function route(){
+  var m=location.hash.match(/^#\/u\/([A-Za-z0-9_]{3,20})$/);
+  if(m){V.tab='people';V.user=m[1].toLowerCase();loadPublic(V.user)}
+  else if(location.hash==='#/people'){V.tab='people';V.user=null;if(PEOPLE.list===null)loadPeople()}
+  else if(V.user)V.user=null;
+  else return false;
+  render();window.scrollTo(0,0);return true;
+}
+
+function siteUrl(){return location.origin+location.pathname}
+function authError(e){
+  var m=(e&&e.message)||'';
+  if(/invalid login credentials/i.test(m))return 'That email and password don’t match.';
+  if(/email not confirmed/i.test(m))return 'Confirm your email first. Check your inbox for the link.';
+  if(/already registered/i.test(m))return 'There’s already an account with that email. Sign in instead.';
+  if(/rate limit/i.test(m))return 'Too many attempts. Wait a few minutes and try again.';
+  if(/fetch|network/i.test(m))return 'Couldn’t reach the server. Check your connection and try again.';
+  return m||'Something went wrong. Try again.';
+}
+function openAuth(mode){
+  if(!SB)return;
+  D={type:'auth',mode:mode};
+  var title={signin:'Sign in',signup:'Create an account',reset:'Reset your password'}[mode];
+  var h='<h2>'+title+'</h2>';
+  if(mode==='reset')h+='<p class="sub">We’ll email you a link to choose a new password.</p>';
+  else h+='<p class="sub">Use your Google account, or an email and password.</p><div class="actions"><button class="btn ghost wide" data-act="auth-google">Continue with Google</button></div><div class="or">or</div>';
+  h+='<form id="auth-form" novalidate><label class="f" for="au-email">Email</label><input type="email" id="au-email" autocomplete="email" required>';
+  if(mode!=='reset')h+='<label class="f" for="au-pass">Password</label><input type="password" id="au-pass" minlength="8" required autocomplete="'+(mode==='signup'?'new-password':'current-password')+'">'
+    +(mode==='signup'?'<p class="note" style="margin-top:6px">At least 8 characters.</p>':'');
+  h+='<p class="formerr" id="au-msg" role="status"></p><div class="actions"><button class="btn" type="submit">'+{signin:'Sign in',signup:'Create account',reset:'Send reset link'}[mode]+'</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>';
+  h+='<p class="note" style="margin-top:18px">'+(mode==='signin'
+    ?'New here? <button class="link" data-act="auth-mode" data-mode="signup">Create an account</button> · <button class="link" data-act="auth-mode" data-mode="reset">Forgot your password?</button>'
+    :'Already have an account? <button class="link" data-act="auth-mode" data-mode="signin">Sign in</button>')+'</p>';
+  openDlg(h);
+  $('#au-email').focus();
+}
+function submitAuth(){
+  var mode=D&&D.mode,email=$('#au-email').value.trim(),pass=$('#au-pass')?$('#au-pass').value:'';
+  var msg=$('#au-msg'),btn=$('#auth-form button[type=submit]');
+  msg.className='formerr';msg.textContent='';
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){msg.textContent='Enter a valid email address.';return}
+  if(mode!=='reset'&&pass.length<8){msg.textContent='Passwords need at least 8 characters.';return}
+  btn.disabled=true;
+  var p=mode==='signin'?SB.auth.signInWithPassword({email:email,password:pass})
+    :mode==='signup'?SB.auth.signUp({email:email,password:pass,options:{emailRedirectTo:siteUrl()}})
+    :SB.auth.resetPasswordForEmail(email,{redirectTo:siteUrl()});
+  p.then(function(r){
+    btn.disabled=false;
+    if(r.error){msg.textContent=authError(r.error);return}
+    if(mode==='signin'||(mode==='signup'&&r.data&&r.data.session)){closeDlg();return}
+    msg.className='formerr ok';
+    msg.textContent=mode==='signup'?'Check your email for a link to confirm your account, then sign in.':'If that email has an account, a reset link is on its way.';
+  }).catch(function(){btn.disabled=false;msg.textContent='Something went wrong. Check your connection and try again.'});
+}
+function googleSignIn(){
+  SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:siteUrl()}}).then(function(r){
+    var msg=$('#au-msg');if(r.error&&msg)msg.textContent=authError(r.error);
+  });
+}
+function openUsername(){
+  D={type:'username'};
+  var meta=USER.user_metadata||{};
+  var guess=(meta.full_name||meta.name||(USER.email||'').split('@')[0]||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9_]+/g,'_').replace(/^_+|_+$/g,'').slice(0,20);
+  if(guess.length<3)guess='';
+  openDlg('<h2>Pick a username</h2><p class="sub">It’s your profile link and appears next to your reviews. Use 3 to 20 lowercase letters, numbers or underscores.</p>'
+    +'<form id="username-form" novalidate><label class="f" for="un">Username</label><input type="text" id="un" maxlength="20" autocomplete="username" autocapitalize="none" spellcheck="false" value="'+esc(guess)+'">'
+    +'<p class="formerr" id="un-msg" role="status"></p><div class="actions"><button class="btn" type="submit">Save username</button><button class="btn ghost" type="button" data-act="sign-out">Sign out</button></div></form>');
+  $('#un').focus();
+}
+function submitUsername(){
+  var u=$('#un').value.trim().toLowerCase(),msg=$('#un-msg'),user=USER;
+  if(!/^[a-z0-9_]{3,20}$/.test(u)){msg.textContent='Use 3 to 20 lowercase letters, numbers or underscores.';return}
+  SB.from('profiles').insert({id:user.id,username:u}).select('id,username,fav_matches,fav_players').single().then(function(r){
+    if(r.error){msg.textContent=r.error.code==='23505'?'That username is taken. Try another.':'Couldn’t save your username. Try again.';return}
+    if(USER!==user)return;
+    ME=r.data;S=blank();closeDlg();render();
+    toast(importable()?'Welcome, @'+u+'. You can import your earlier ratings from your profile.':'Welcome, @'+u+'.');
+  });
+}
+function openNewPassword(){
+  D={type:'newpass'};
+  openDlg('<h2>Choose a new password</h2><form id="newpass-form" novalidate><label class="f" for="np">New password</label><input type="password" id="np" minlength="8" autocomplete="new-password">'
+    +'<p class="note" style="margin-top:6px">At least 8 characters.</p><p class="formerr" id="np-msg" role="status"></p>'
+    +'<div class="actions"><button class="btn" type="submit">Save password</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>');
+  $('#np').focus();
+}
+function submitNewPassword(){
+  var p=$('#np').value,msg=$('#np-msg');
+  if(p.length<8){msg.textContent='Passwords need at least 8 characters.';return}
+  SB.auth.updateUser({password:p}).then(function(r){
+    if(r.error){msg.textContent=authError(r.error);return}
+    closeDlg();toast('Password updated');
+  });
+}
+function handleSession(session){
+  var u=session?session.user:null;
+  if(!BOOT&&(u&&u.id)===(USER&&USER.id))return;
+  BOOT=false;USER=u;ME=null;
+  if(!u){S=load();render();return}
+  S=blank();render();
+  SB.from('profiles').select('id,username,fav_matches,fav_players').eq('id',u.id).maybeSingle().then(function(r){
+    if(USER!==u)return;
+    if(r.error)throw r.error;
+    if(!r.data){openUsername();return}
+    ME=r.data;
+    return fetchUserData(ME).then(function(d){
+      if(USER!==u)return;
+      S=d;render();
+      if(importable())toast('You have ratings saved in this browser. Import them from your profile.');
+    });
+  }).catch(function(e){console.error(e);toast('Couldn’t load your account. Reload the page to try again.')});
+}
+function initAuth(){
+  var c=window.FULLTIME_CONFIG||{};
+  if(!window.supabase||!c.supabaseUrl||!c.supabaseKey){BOOT=false;return}
+  try{SB=window.supabase.createClient(c.supabaseUrl,c.supabaseKey,{auth:{flowType:'pkce'}})}
+  catch(e){console.error(e);SB=null;BOOT=false;return}
+  SB.auth.onAuthStateChange(function(event,session){
+    // Defer: supabase-js warns against calling it from inside this callback.
+    setTimeout(function(){
+      if(/[?&]code=/.test(location.search))history.replaceState(null,'',location.pathname+location.hash);
+      handleSession(session);
+      if(event==='PASSWORD_RECOVERY')openNewPassword();
+    },0);
+  });
+}
+
+window.addEventListener('hashchange',route);
+initAuth();
+if(!route())render();
 })();
 </script>
 </body>
