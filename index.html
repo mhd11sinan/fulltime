@@ -199,7 +199,7 @@ ol.ranks{list-style:none;margin:0;padding:0}
 (function(){
 'use strict';
 
-/* ---------- data: verified results, matchdays 1 and 2 of the 2026/27 league phase ---------- */
+/* ---------- data: results through matchday 3 of 2026/27, appended by scripts/update_matches.py ---------- */
 var TEAMS=['AEK Athens','Arsenal','Aston Villa','Atlético Madrid','Barcelona','Bayern München','Bodø/Glimt','Borussia Dortmund','Club Brugge','Como','Fenerbahçe','Feyenoord','Galatasaray','Inter','LASK','Lens','Lille','Liverpool','Manchester City','Manchester United','Napoli','Paris Saint-Germain','Porto','PSV Eindhoven','RB Leipzig','Real Betis','Real Madrid','Roma','Sabah','Shakhtar Donetsk','Slavia Praha','Slovan Bratislava','Sporting CP','Stuttgart','Villarreal','Viking'];
 var RAW=[
  [1,'2026-09-08','Aston Villa',3,'Club Brugge',2],
@@ -237,7 +237,25 @@ var RAW=[
  [2,'2026-10-14','Bodø/Glimt',1,'Borussia Dortmund',0],
  [2,'2026-10-14','Manchester City',2,'Paris Saint-Germain',4],
  [2,'2026-10-14','Real Betis',3,'Porto',2],
- [2,'2026-10-14','Slovan Bratislava',0,'Stuttgart',3]
+ [2,'2026-10-14','Slovan Bratislava',0,'Stuttgart',3],
+ [3,'2026-10-20','Sabah',1,'Borussia Dortmund',2],
+ [3,'2026-10-20','Fenerbahçe',2,'Slavia Praha',2],
+ [3,'2026-10-20','Manchester City',5,'AEK Athens',1],
+ [3,'2026-10-20','Stuttgart',1,'Atlético Madrid',1],
+ [3,'2026-10-20','Liverpool',4,'Villarreal',3],
+ [3,'2026-10-20','Roma',4,'Slovan Bratislava',0],
+ [3,'2026-10-20','Porto',0,'PSV Eindhoven',1],
+ [3,'2026-10-20','Napoli',4,'Bodø/Glimt',3],
+ [3,'2026-10-20','Paris Saint-Germain',4,'Barcelona',2],
+ [3,'2026-10-21','Como',4,'Manchester United',1],
+ [3,'2026-10-21','Lille',2,'Galatasaray',4],
+ [3,'2026-10-21','Real Madrid',4,'RB Leipzig',1],
+ [3,'2026-10-21','Inter',1,'Shakhtar Donetsk',0],
+ [3,'2026-10-21','Bayern München',2,'Arsenal',2],
+ [3,'2026-10-21','Club Brugge',3,'Lens',0],
+ [3,'2026-10-21','Aston Villa',3,'Viking',1],
+ [3,'2026-10-21','Sporting CP',2,'LASK',3],
+ [3,'2026-10-21','Real Betis',1,'Feyenoord',0]
 ];
 var BASE=RAW.map(function(r,i){return{id:'m'+(i+1),md:r[0],date:r[1],home:r[2],hs:r[3],away:r[4],as:r[5]}});
 var MODES={live:'Watched live',replay:'Watched the replay',attended:'Was at the match',highlights:'Highlights only'};
@@ -333,7 +351,7 @@ function matchesView(){
   if(V.filter!=='all')list=list.filter(function(m){return String(m.md)===V.filter});
   if(V.logged)list=list.filter(function(m){return S.logs[m.id]});
   list.sort(function(a,b){return b.date.localeCompare(a.date)||a.id.localeCompare(b.id)});
-  var h='<div class="pagehead"><h1>Champions League 2026/27</h1><p class="lede">Log a match, give it stars, say what you thought. Results here run through matchday 2. If something newer has been played, add it yourself.</p></div>';
+  var h='<div class="pagehead"><h1>Champions League 2026/27</h1><p class="lede">Log a match, give it stars, say what you thought. Results here run through matchday 3. If something newer has been played, add it yourself.</p></div>';
   h+='<div class="toolbar"><div class="chips" role="group" aria-label="Filter by matchday"><button class="chip" data-act="filter" data-f="all" aria-pressed="'+(V.filter==='all')+'">All</button>';
   mds.forEach(function(md){h+='<button class="chip" data-act="filter" data-f="'+md+'" aria-pressed="'+(V.filter===String(md))+'">'+(md===9?'Knockouts':'MD '+md)+'</button>'});
   h+='</div><span class="spacer"></span><label class="check"><input type="checkbox" data-act="toggle-logged"'+(V.logged?' checked':'')+'> Only matches I’ve logged</label><button class="btn ghost" data-act="add-match-open">Add a match</button></div>';

@@ -5,7 +5,7 @@ Letterboxd-style site for football fans. Users log matches, rate them (0.5 to 5 
 ## Current scope
 - Competition: UEFA Champions League 2026/27 league phase only.
 - Players: names only, no photos or club crests (avoids licensing problems).
-- Matches seeded: matchdays 1 and 2 (36 results). Matchday 3 onward is missing; users can add matches by hand.
+- Matches seeded: 54 results through matchday 3. New results are added weekly by `.github/workflows/update-matches.yml` from football-data.org.
 - One fixture (Slavia Praha v Lens, 10 Sep 2026) had home and away order that differed between sources. Verify against UEFA before relying on it.
 
 ## Current implementation
