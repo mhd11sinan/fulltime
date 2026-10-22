@@ -517,7 +517,7 @@ function load(){
 }
 var S=load();
 // match: match page id; psub/listId: own profile section and open list; user/pubSub/pubList: a public profile.
-var V={tab:'matches',filter:'all',logged:false,ptab:'squads',club:'',match:null,psub:'overview',listId:null,user:null,pubSub:'overview',pubList:null};
+var V={tab:'matches',filter:'all',logged:false,ptab:'squads',club:'',pq:'',match:null,psub:'overview',listId:null,user:null,pubSub:'overview',pubList:null};
 var MS={id:null,loading:false,logs:null,likes:0,err:''}; // other fans' ratings on the open match page
 var SQUADS=null,SQUADS_ERR=false; // squads.json, written by the weekly update
 var NAVS=0; // in-app hash navigations, so Back knows whether history.back() stays on this site
@@ -689,29 +689,57 @@ function addPlayerForm(open){
     +'<div><label class="f" for="pt">Club</label><select id="pt">'+teamOptions(V.club||S.favTeam||'')+'</select></div>'
     +'<button class="btn" data-act="add-player">Add player</button></div></details>';
 }
+var ALLCLUBS='__all';
+function fold(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ø/g,'o').replace(/ł/g,'l')}
+function squadClubs(){return TEAMS.filter(function(t){return SQUADS.teams[t]}).sort(function(a,b){return a.localeCompare(b)})}
+// Selected club: what the user picked, else their own club, else every club.
+function currentClub(clubs){
+  var c=V.club||S.favTeam||ALLCLUBS;
+  return c===ALLCLUBS||clubs.indexOf(c)>=0?c:ALLCLUBS;
+}
 function squadsHTML(){
   if(!SQUADS)return SQUADS_ERR?'<p class="empty">Squad lists arrive with the next weekly update. Until then you can add players by hand.</p>'+addPlayerForm(true):'<p class="empty">Loading squads…</p>';
-  var clubs=TEAMS.filter(function(t){return SQUADS.teams[t]}).sort(function(a,b){return a.localeCompare(b)});
+  var clubs=squadClubs();
   if(!clubs.length)return '<p class="empty">No squads are listed yet.</p>'+addPlayerForm(true);
-  var club=V.club||S.favTeam;
-  if(clubs.indexOf(club)<0)club=clubs[0];
+  var club=currentClub(clubs),total=clubs.reduce(function(n,t){return n+SQUADS.teams[t].length},0);
   var h='<div class="clubbar"><div><label class="f" for="club-pick">Club</label><select id="club-pick">'
+    +'<option value="'+ALLCLUBS+'"'+(club===ALLCLUBS?' selected':'')+'>All clubs ('+total+' players)</option>'
     +clubs.map(function(t){return '<option'+(t===club?' selected':'')+'>'+esc(t)+'</option>'}).join('')+'</select></div>'
-    +(S.favTeam&&club!==S.favTeam&&clubs.indexOf(S.favTeam)>=0?'<button class="btn ghost tiny" data-act="club-mine">Back to '+esc(S.favTeam)+'</button>':'')+'</div>';
+    +'<div><label class="f" for="player-q">Search players</label><input type="search" id="player-q" maxlength="40" autocomplete="off" spellcheck="false" placeholder="Type a name" value="'+esc(V.pq)+'"></div></div>';
+  if(clubs.length<TEAMS.length)h+='<p class="note" style="margin:-6px 0 14px">No squad listed yet for '+esc(TEAMS.filter(function(t){return !SQUADS.teams[t]}).join(', '))+'. You can add their players by hand below.</p>';
+  return h+'<div id="squad-list">'+squadListHTML()+'</div>'+addPlayerForm(false);
+}
+function squadRow(p,club,showPos){
+  var id=pid(p.name,club),r=S.players[id],rk=S.prank.indexOf(id);
+  return '<button class="prow" data-act="open-squad" data-team="'+esc(club)+'" data-name="'+esc(p.name)+'"><span><span class="pname">'+esc(p.name)+'</span>'
+    +(showPos&&p.pos?'<span class="pos">'+p.pos+'</span>':'')
+    +(rk>=0?'<span class="favbadge">#'+(rk+1)+' this season</span>':'')+'</span><span>'+(r&&r.rating?starsHTML(r.rating):'<span class="ratebtn">Rate</span>')+'</span>'
+    +(r&&r.note?'<span class="pnote">'+esc(r.note)+'</span>':'')+'</button>';
+}
+// The part under the club picker; redrawn on its own while typing so the search box keeps focus.
+function squadListHTML(){
+  var clubs=squadClubs(),club=currentClub(clubs),q=fold(V.pq.trim());
+  var pool=club===ALLCLUBS?clubs:[club],h='',shown=0;
+  if(q||club===ALLCLUBS){
+    // Grouped by club, with a position tag on each player.
+    pool.forEach(function(t){
+      var ps=SQUADS.teams[t].filter(function(p){return !q||fold(p.name).indexOf(q)>=0});
+      if(!ps.length)return;
+      shown+=ps.length;
+      h+='<div class="posgroup">'+esc(t)+' <span style="font-weight:500;letter-spacing:0;text-transform:none">· '+plural(ps.length,'player')+'</span></div>'
+        +ps.map(function(p){return squadRow(p,t,true)}).join('');
+    });
+    if(!shown)return '<p class="empty">No player matches “'+esc(V.pq.trim())+'”'+(club===ALLCLUBS?'':' at '+esc(club))+'.'+(club===ALLCLUBS?'':' Try All clubs.')+'</p>';
+    return (q?'<p class="note" style="margin-bottom:10px">'+plural(shown,'player')+' found</p>':'')+'<div class="list">'+h+'</div>';
+  }
+  // One club: grouped by position.
   var squad=SQUADS.teams[club]||[];
-  h+='<div class="list">';
   ['GK','DEF','MID','FWD',''].forEach(function(g){
     var ps=squad.filter(function(p){return (p.pos||'')===g});
     if(!ps.length)return;
-    h+='<div class="posgroup">'+POS[g]+'</div>';
-    ps.forEach(function(p){
-      var id=pid(p.name,club),r=S.players[id],rk=S.prank.indexOf(id);
-      h+='<button class="prow" data-act="open-squad" data-team="'+esc(club)+'" data-name="'+esc(p.name)+'"><span><span class="pname">'+esc(p.name)+'</span>'
-        +(rk>=0?'<span class="favbadge">#'+(rk+1)+' this season</span>':'')+'</span><span>'+(r&&r.rating?starsHTML(r.rating):'<span class="ratebtn">Rate</span>')+'</span>'
-        +(r&&r.note?'<span class="pnote">'+esc(r.note)+'</span>':'')+'</button>';
-    });
+    h+='<div class="posgroup">'+POS[g]+'</div>'+ps.map(function(p){return squadRow(p,club,false)}).join('');
   });
-  return h+'</div>'+addPlayerForm(false);
+  return '<div class="list">'+h+'</div>';
 }
 function ratedHTML(){
   var ps=Object.keys(S.players).map(function(k){return S.players[k]});
@@ -1172,7 +1200,6 @@ document.addEventListener('click',function(e){
       var sq=t.dataset.team,sn=t.dataset.name,sid=slug(sn)+'|'+slug(sq);
       openPlayer(sid,{id:sid,name:sn,team:sq,rating:0,note:''});break;}
     case 'ptab':V.ptab=t.dataset.p;render();break;
-    case 'club-mine':V.club=S.favTeam;render();break;
     case 'rank-move':{
       var rk=t.dataset.kind,rarr=rk==='team'?teamOrder(S):rankedPlayers(S);
       rankMove(rk,t.dataset.key,rarr.indexOf(t.dataset.key)+parseInt(t.dataset.dir,10));break;}
@@ -1304,6 +1331,11 @@ document.addEventListener('change',function(e){
 });
 var qTimer;
 document.addEventListener('input',function(e){
+  if(e.target.id==='player-q'){
+    V.pq=e.target.value;clearTimeout(qTimer);
+    qTimer=setTimeout(function(){var el=$('#squad-list');if(el)el.innerHTML=squadListHTML()},120);
+    return;
+  }
   if(e.target.id!=='people-q')return;
   PEOPLE.q=e.target.value;clearTimeout(qTimer);qTimer=setTimeout(loadPeople,250);
 });
