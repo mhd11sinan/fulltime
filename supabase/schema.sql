@@ -124,3 +124,23 @@ grant select on public.profiles, public.match_logs, public.player_ratings, publi
 grant insert, update on public.profiles to authenticated;
 grant insert, update, delete on public.match_logs, public.player_ratings, public.custom_matches,
   public.match_likes, public.watchlist, public.lists to authenticated;
+
+-- Sign-up is username + password: the app sends the username as user metadata and
+-- this trigger creates the profile in the same transaction as the account. If the
+-- username is invalid or taken, the insert fails and so does the whole sign-up.
+create function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  insert into public.profiles (id, username)
+  values (new.id, lower(new.raw_user_meta_data ->> 'username'));
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();

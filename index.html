@@ -191,9 +191,6 @@ ol.ranks{list-style:none;margin:0;padding:0}
   nav{order:2;width:100%;overflow-x:auto}
 }
 a.btn{display:inline-block;text-decoration:none}
-.btn.wide{width:100%}
-.or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px;margin:18px 0 0}
-.or::before,.or::after{content:"";flex:1;border-top:1px solid var(--line)}
 .formerr{margin-top:12px;font-size:14px;color:var(--danger)}
 .formerr:empty{display:none}
 .formerr.ok{color:var(--accent)}
@@ -895,7 +892,7 @@ function profileView(){
   var o={isMe:true,sub:V.psub,listId:V.listId};
   if(ME){
     o.name='@'+ME.username;
-    o.extra='<p class="sharelink">Your public profile: <a href="#/u/'+esc(ME.username)+'">'+esc(profileUrl(ME.username))+'</a><button class="btn ghost tiny" data-act="copy-link">Copy link</button></p>';
+    o.extra='<p class="sharelink">Your public profile: <a href="#/u/'+esc(ME.username)+'">'+esc(profileUrl(ME.username))+'</a><button class="btn ghost tiny" data-act="copy-link">Copy link</button><button class="btn ghost tiny" data-act="change-pass">Change password</button></p>';
     return importPanel()+profileHTML(S,o);
   }
   var h='';
@@ -1154,7 +1151,7 @@ document.addEventListener('click',function(e){
     case 'sign-in':openAuth('signin');break;
     case 'sign-out':closeDlg();if(SB)SB.auth.signOut().then(function(r){if(r.error)toast('Couldn’t sign out. Try again.')});break;
     case 'auth-mode':openAuth(t.dataset.mode);break;
-    case 'auth-google':googleSignIn();break;
+    case 'change-pass':openNewPassword();break;
     case 'import':doImport();break;
     case 'import-skip':setImported();render();break;
     case 'copy-link':
@@ -1305,55 +1302,58 @@ function route(){
   if(!(prevUser&&prevUser===V.user))window.scrollTo(0,0);
 }
 
-function siteUrl(){return location.origin+location.pathname}
+// Supabase Auth needs an email address, so each username maps to a placeholder
+// address that is never shown or mailed. "Confirm email" must be off (SUPABASE.md).
+var UNAME=/^[a-z0-9_]{3,20}$/;
+function authEmail(u){return u+'@'+((window.FULLTIME_CONFIG||{}).authEmailDomain||'users.fulltime.invalid')}
 function authError(e){
   var m=(e&&e.message)||'';
-  if(/invalid login credentials/i.test(m))return 'That email and password don’t match.';
-  if(/email not confirmed/i.test(m))return 'Confirm your email first. Check your inbox for the link.';
-  if(/already registered/i.test(m))return 'There’s already an account with that email. Sign in instead.';
+  if(/invalid login credentials/i.test(m))return 'That username and password don’t match.';
+  if(/already registered|already exists/i.test(m))return 'That username is taken. Try another.';
+  if(/database error saving new user/i.test(m))return 'That username is taken or not allowed. Try another.';
+  if(/email not confirmed/i.test(m))return 'Sign-in is blocked because “Confirm email” is on in Supabase. The site owner needs to switch it off (see SUPABASE.md).';
+  if(/email/i.test(m)&&/invalid/i.test(m))return 'The server rejected the account. The site owner needs to check the email settings in SUPABASE.md.';
+  if(/weak|password should|pwned/i.test(m))return 'Pick a stronger password: at least 8 characters and not a common one.';
   if(/rate limit/i.test(m))return 'Too many attempts. Wait a few minutes and try again.';
   if(/fetch|network/i.test(m))return 'Couldn’t reach the server. Check your connection and try again.';
   return m||'Something went wrong. Try again.';
 }
 function openAuth(mode){
   if(!SB)return;
-  D={type:'auth',mode:mode};
-  var title={signin:'Sign in',signup:'Create an account',reset:'Reset your password'}[mode];
-  var h='<h2>'+title+'</h2>';
-  if(mode==='reset')h+='<p class="sub">We’ll email you a link to choose a new password.</p>';
-  else h+='<p class="sub">Use your Google account, or an email and password.</p><div class="actions"><button class="btn ghost wide" data-act="auth-google">Continue with Google</button></div><div class="or">or</div>';
-  h+='<form id="auth-form" novalidate><label class="f" for="au-email">Email</label><input type="email" id="au-email" autocomplete="email" required>';
-  if(mode!=='reset')h+='<label class="f" for="au-pass">Password</label><input type="password" id="au-pass" minlength="8" required autocomplete="'+(mode==='signup'?'new-password':'current-password')+'">'
-    +(mode==='signup'?'<p class="note" style="margin-top:6px">At least 8 characters.</p>':'');
-  h+='<p class="formerr" id="au-msg" role="status"></p><div class="actions"><button class="btn" type="submit">'+{signin:'Sign in',signup:'Create account',reset:'Send reset link'}[mode]+'</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>';
-  h+='<p class="note" style="margin-top:18px">'+(mode==='signin'
-    ?'New here? <button class="link" data-act="auth-mode" data-mode="signup">Create an account</button> · <button class="link" data-act="auth-mode" data-mode="reset">Forgot your password?</button>'
-    :'Already have an account? <button class="link" data-act="auth-mode" data-mode="signin">Sign in</button>')+'</p>';
+  var up=mode==='signup';
+  D={type:'auth',mode:up?'signup':'signin'};
+  var h='<h2>'+(up?'Create an account':'Sign in')+'</h2><p class="sub">'+(up?'Pick a username and a password. No email needed.':'Welcome back.')+'</p>'
+    +'<form id="auth-form" novalidate><label class="f" for="au-user">Username</label><input type="text" id="au-user" maxlength="20" required autocomplete="username" autocapitalize="none" spellcheck="false">';
+  if(up)h+='<p class="note" style="margin-top:6px">3 to 20 lowercase letters, numbers or underscores. It’s your profile link and can’t be changed later.</p>';
+  h+='<label class="f" for="au-pass">Password</label><input type="password" id="au-pass" minlength="8" required autocomplete="'+(up?'new-password':'current-password')+'">';
+  if(up)h+='<label class="f" for="au-pass2">Confirm password</label><input type="password" id="au-pass2" minlength="8" required autocomplete="new-password">'
+    +'<p class="note" style="margin-top:6px">At least 8 characters. There’s no email to reset it with, so keep it somewhere safe.</p>';
+  h+='<p class="formerr" id="au-msg" role="status"></p><div class="actions"><button class="btn" type="submit">'+(up?'Create account':'Sign in')+'</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>'
+    +'<p class="note" style="margin-top:18px">'+(up?'Already have an account? <button class="link" data-act="auth-mode" data-mode="signin">Sign in</button>'
+      :'New here? <button class="link" data-act="auth-mode" data-mode="signup">Create an account</button>')+'</p>';
   openDlg(h);
-  $('#au-email').focus();
+  $('#au-user').focus();
 }
 function submitAuth(){
-  var mode=D&&D.mode,email=$('#au-email').value.trim(),pass=$('#au-pass')?$('#au-pass').value:'';
+  var up=D&&D.mode==='signup',u=$('#au-user').value.trim().toLowerCase(),pass=$('#au-pass').value;
   var msg=$('#au-msg'),btn=$('#auth-form button[type=submit]');
   msg.className='formerr';msg.textContent='';
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){msg.textContent='Enter a valid email address.';return}
-  if(mode!=='reset'&&pass.length<8){msg.textContent='Passwords need at least 8 characters.';return}
+  if(!UNAME.test(u)){msg.textContent='Usernames are 3 to 20 lowercase letters, numbers or underscores.';return}
+  if(pass.length<8){msg.textContent='Passwords need at least 8 characters.';return}
+  if(up&&pass!==$('#au-pass2').value){msg.textContent='The two passwords don’t match.';return}
   btn.disabled=true;
-  var p=mode==='signin'?SB.auth.signInWithPassword({email:email,password:pass})
-    :mode==='signup'?SB.auth.signUp({email:email,password:pass,options:{emailRedirectTo:siteUrl()}})
-    :SB.auth.resetPasswordForEmail(email,{redirectTo:siteUrl()});
+  var p=up?SB.auth.signUp({email:authEmail(u),password:pass,options:{data:{username:u}}})
+    :SB.auth.signInWithPassword({email:authEmail(u),password:pass});
   p.then(function(r){
     btn.disabled=false;
     if(r.error){msg.textContent=authError(r.error);return}
-    if(mode==='signin'||(mode==='signup'&&r.data&&r.data.session)){closeDlg();return}
-    msg.className='formerr ok';
-    msg.textContent=mode==='signup'?'Check your email for a link to confirm your account, then sign in.':'If that email has an account, a reset link is on its way.';
+    if(up&&!(r.data&&r.data.session)){
+      msg.textContent='Your account was made, but Supabase wants email confirmation, which can’t work without email. The site owner needs to switch off “Confirm email” (see SUPABASE.md).';
+      return;
+    }
+    closeDlg();
+    if(up)toast('Welcome, @'+u+'.');
   }).catch(function(){btn.disabled=false;msg.textContent='Something went wrong. Check your connection and try again.'});
-}
-function googleSignIn(){
-  SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:siteUrl()}}).then(function(r){
-    var msg=$('#au-msg');if(r.error&&msg)msg.textContent=authError(r.error);
-  });
 }
 function openUsername(){
   D={type:'username'};
@@ -1377,7 +1377,8 @@ function submitUsername(){
 }
 function openNewPassword(){
   D={type:'newpass'};
-  openDlg('<h2>Choose a new password</h2><form id="newpass-form" novalidate><label class="f" for="np">New password</label><input type="password" id="np" minlength="8" autocomplete="new-password">'
+  openDlg('<h2>Change your password</h2><form id="newpass-form" novalidate><label class="f" for="np">New password</label><input type="password" id="np" minlength="8" autocomplete="new-password">'
+    +'<label class="f" for="np2">Confirm new password</label><input type="password" id="np2" minlength="8" autocomplete="new-password">'
     +'<p class="note" style="margin-top:6px">At least 8 characters.</p><p class="formerr" id="np-msg" role="status"></p>'
     +'<div class="actions"><button class="btn" type="submit">Save password</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>');
   $('#np').focus();
@@ -1385,6 +1386,7 @@ function openNewPassword(){
 function submitNewPassword(){
   var p=$('#np').value,msg=$('#np-msg');
   if(p.length<8){msg.textContent='Passwords need at least 8 characters.';return}
+  if(p!==$('#np2').value){msg.textContent='The two passwords don’t match.';return}
   SB.auth.updateUser({password:p}).then(function(r){
     if(r.error){msg.textContent=authError(r.error);return}
     closeDlg();toast('Password updated');
@@ -1411,15 +1413,11 @@ function handleSession(session){
 function initAuth(){
   var c=window.FULLTIME_CONFIG||{};
   if(!window.supabase||!c.supabaseUrl||!c.supabaseKey){BOOT=false;return}
-  try{SB=window.supabase.createClient(c.supabaseUrl,c.supabaseKey,{auth:{flowType:'pkce'}})}
+  try{SB=window.supabase.createClient(c.supabaseUrl,c.supabaseKey)}
   catch(e){console.error(e);SB=null;BOOT=false;return}
   SB.auth.onAuthStateChange(function(event,session){
     // Defer: supabase-js warns against calling it from inside this callback.
-    setTimeout(function(){
-      if(/[?&]code=/.test(location.search))history.replaceState(null,'',location.pathname+location.hash);
-      handleSession(session);
-      if(event==='PASSWORD_RECOVERY')openNewPassword();
-    },0);
+    setTimeout(function(){handleSession(session)},0);
   });
 }
 

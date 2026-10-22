@@ -1,9 +1,29 @@
 # Setting up accounts (Supabase)
 
-Fulltime uses Supabase for accounts and storage. Until `config.js` has your project's
-details, the site runs without accounts and ratings stay in each visitor's browser.
+Fulltime accounts are a **username and a password**: no email, no Google. Supabase stores
+the accounts and everyone's ratings. Until `config.js` has your project's details, the site
+runs without accounts and ratings stay in each visitor's browser.
 
 Live site: https://mhd11sinan.github.io/fulltime/
+
+## How usernames work
+
+Supabase's sign-in needs an email address for every account, so the app turns each
+username into a placeholder address, `<username>@users.fulltime.invalid`. `.invalid` is a
+domain reserved so it can never receive mail, and nothing is ever sent there. People only
+ever see and type their username.
+
+Two things follow from that:
+
+- **There's no "forgot password".** With no real email, people can't reset a lost password
+  themselves. Signed-in users can change theirs from their profile (**Change password**).
+  If someone is locked out, you can set a temporary password for them in **SQL Editor**
+  (replace both values), tell them privately, and ask them to change it:
+
+      update auth.users
+      set encrypted_password = extensions.crypt('temporary-password', extensions.gen_salt('bf'))
+      where email = 'their_username@users.fulltime.invalid';
+- **Usernames can't be changed** after sign-up, because the sign-in address is built from them.
 
 ## 1. Create the Supabase project
 
@@ -15,53 +35,30 @@ Live site: https://mhd11sinan.github.io/fulltime/
 
 ## 2. Create the tables
 
-1. In the project, open **SQL Editor** and click **New query**.
-2. Paste the whole of [`supabase/schema.sql`](supabase/schema.sql) and click **Run**.
+1. Open https://raw.githubusercontent.com/mhd11sinan/fulltime/main/supabase/schema.sql,
+   press **Ctrl+A** then **Ctrl+C**.
+2. In Supabase, open **SQL Editor**, click **New query**, paste with **Ctrl+V**, and click **Run**.
    You should see "Success. No rows returned".
-3. Open **Table Editor** to check: you should see `profiles`, `match_logs`,
-   `player_ratings` and `custom_matches`.
+3. Open **Table Editor**. You should see seven tables: `profiles`, `match_logs`,
+   `player_ratings`, `custom_matches`, `match_likes`, `watchlist` and `lists`.
 
-## 3. Tell Supabase where the site lives
+The script also adds a trigger that creates each person's profile at the moment they sign up.
 
-**Authentication > URL Configuration**:
+## 3. Turn on username sign-in
 
-- **Site URL**: `https://mhd11sinan.github.io/fulltime/`
-- **Redirect URLs**: add `https://mhd11sinan.github.io/fulltime/` and, for testing on your
-  PC, `http://localhost:8000/`
+Open **Authentication > Sign In / Providers**:
 
-## 4. Email and password sign-in
+1. Make sure **Allow new users to sign up** is on.
+2. Open **Email** and make sure it's **enabled**.
+3. Turn **Confirm email** **off** and click **Save**. This is required: with it on, nobody
+   could finish signing up, because the placeholder addresses can't receive the
+   confirmation email.
 
-**Authentication > Sign In / Providers > Email**: make sure it's enabled and leave
-**Confirm email** on, so people must click a link in their inbox before signing in.
+Optional, under **Authentication > Sign In / Providers > Email** or **Auth > Policies**
+depending on your dashboard version: set the minimum password length to 8 to match the app,
+and turn on leaked-password protection if your plan offers it.
 
-Supabase's built-in email sender only allows a few emails an hour. That's fine for testing.
-Before you invite lots of people, set up your own sender under
-**Authentication > Emails > SMTP Settings** (for example with Resend or Brevo, which have
-free plans).
-
-## 5. Google sign-in
-
-You need a Google OAuth client.
-
-1. Go to https://console.cloud.google.com and create a project called `Fulltime`.
-2. Open **Google Auth Platform** (search for "OAuth consent screen" if you can't find it)
-   and click **Get started**:
-   - App name: `Fulltime`; support email: your email.
-   - Audience: **External**.
-   - Contact email: your email. Agree and **Create**.
-3. In Supabase, open **Authentication > Sign In / Providers > Google** and copy the
-   **Callback URL** it shows (it looks like `https://<your-project>.supabase.co/auth/v1/callback`).
-4. Back in Google, open **Clients > Create client**:
-   - Application type: **Web application**, name `Fulltime`.
-   - Authorised JavaScript origins: `https://mhd11sinan.github.io` and `http://localhost:8000`
-   - Authorised redirect URIs: the Callback URL from step 3.
-   - Click **Create**, then copy the **Client ID** and **Client secret**.
-5. In Supabase's Google provider, turn it on, paste the Client ID and Client secret, and **Save**.
-6. In Google, open **Audience** and click **Publish app**. While the app is in "Testing",
-   only the test users you list there can sign in. Fulltime only asks for name and email,
-   so publishing doesn't need Google's review.
-
-## 6. Connect the site
+## 4. Connect the site
 
 1. In Supabase, open **Project Settings > API Keys** (or the **Connect** button at the top).
 2. Copy the **Project URL** and the **publishable key** (starts with `sb_publishable_`;
@@ -69,7 +66,7 @@ You need a Google OAuth client.
 3. Put them in `config.js`:
 
        supabaseUrl: 'https://<your-project>.supabase.co',
-       supabaseKey: 'sb_publishable_...'
+       supabaseKey: 'sb_publishable_...',
 
 4. Commit and push. GitHub Pages redeploys in a minute or two.
 
@@ -80,10 +77,20 @@ this repo.
 
 ## Checking it works
 
-1. Open the live site. A **Sign in** button appears top right.
-2. Create an account with email and password, confirm it from your inbox, sign in and pick
-   a username.
+1. Open the live site (press **Ctrl+F5** to skip any cached copy). A **Sign in** button
+   appears top right.
+2. Click **Sign in > Create an account**, choose a username and password. You should be
+   signed in straight away, with your username at the top right.
 3. If you had ratings in this browser before, the Profile tab offers to import them.
 4. Log a match, then open your profile link (Profile tab > **Copy link**) in a private
    window: it should show your ratings without signing in.
-5. Sign out and sign in with Google.
+5. Sign out, then sign back in with the same username and password.
+
+## If something goes wrong
+
+- **"That username is taken or not allowed"** for every username: the trigger couldn't create
+  the profile. Check that the whole of `schema.sql` ran without errors.
+- **"Sign-in is blocked because Confirm email is on"**: redo step 3.
+- **"The server rejected the account"**: Supabase refused the placeholder address. Tell
+  Claude; the fix is to change `authEmailDomain` in `config.js`, which must happen before
+  anyone signs up.

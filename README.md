@@ -10,7 +10,7 @@ Open `index.html` in a browser, or serve the folder:
 Then visit http://localhost:8000. Without accounts set up, ratings are saved in your browser.
 
 ## Accounts
-Sign-in (Google or email and password), usernames and public profiles use Supabase.
+Accounts (a username and a password, no email), public profiles and shared ratings use Supabase.
 See [SUPABASE.md](SUPABASE.md) to set it up.
 
 ## Host on GitHub Pages
