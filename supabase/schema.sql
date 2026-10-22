@@ -8,6 +8,9 @@ create table public.profiles (
   username text not null unique check (username ~ '^[a-z0-9_]{3,20}$'),
   fav_matches text[] not null default '{}' check (cardinality(fav_matches) <= 4),
   fav_players text[] not null default '{}' check (cardinality(fav_players) <= 4),
+  fav_team text not null default '' check (char_length(fav_team) <= 40),
+  team_rank text[] not null default '{}' check (cardinality(team_rank) <= 40),
+  player_rank text[] not null default '{}' check (cardinality(player_rank) <= 100),
   created_at timestamptz not null default now()
 );
 

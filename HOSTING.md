@@ -55,8 +55,8 @@ become a single command run in this folder after `git init` and the first commit
 ## Automatic match updates
 
 `.github/workflows/update-matches.yml` runs every Friday at 06:00 UTC (11:30 IST). It fetches finished
-Champions League matches from football-data.org, appends any new ones to `index.html`, commits and pushes,
-and GitHub Pages redeploys. One-time setup:
+Champions League matches, upcoming fixtures and club squads from football-data.org, updates `index.html`
+and `squads.json`, commits and pushes, and GitHub Pages redeploys. One-time setup:
 
 1. Register for a free API key at https://www.football-data.org/client/register. The key arrives by email.
 2. In the repo, go to **Settings > Secrets and variables > Actions > New repository secret**.

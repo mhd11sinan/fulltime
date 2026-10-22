@@ -9,88 +9,86 @@
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
-<script>try{var t=localStorage.getItem('fulltime.theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 :root{
   color-scheme:light;
-  --bg:#EEF1EC; --surface:#F9FBF8; --ink:#12161C; --muted:#586370; --line:#CCD3C9;
-  --accent:#1C6B49; --accent-ink:#FFFFFF; --gold:#E4B10A; --star-off:#C7CEC4; --danger:#B3351F;
+  --bg:#F5F2EB; --surface:#FFFFFF; --sunk:#EFEBE2; --ink:#15192A; --muted:#5D6473; --line:#E3DED3; --line-strong:#CFC8BA;
+  --accent:#0E6B47; --accent-ink:#FFFFFF; --accent-soft:#E2F0E8; --gold:#E0A30B; --star-off:#DAD4C8; --danger:#B3351F;
+  --shadow:0 1px 2px rgba(21,25,42,.05),0 6px 20px rgba(21,25,42,.06);
+  --radius:14px;
   --display:'Big Shoulders Display','Arial Narrow','Roboto Condensed',sans-serif;
   --body:'Hanken Grotesk','Segoe UI',system-ui,-apple-system,sans-serif;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --bg:#0D1217; --surface:#151C23; --ink:#E9EFEB; --muted:#94A1A9; --line:#27323B;
-    --accent:#5CC596; --accent-ink:#06140D; --gold:#F2C230; --star-off:#33404A; --danger:#F07A63;
-  }
-}
-:root[data-theme="dark"]{
-  color-scheme:dark;
-  --bg:#0D1217; --surface:#151C23; --ink:#E9EFEB; --muted:#94A1A9; --line:#27323B;
-  --accent:#5CC596; --accent-ink:#06140D; --gold:#F2C230; --star-off:#33404A; --danger:#F07A63;
-}
 html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surface);z-index:10}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-h1,h2,h3{font-family:var(--display);font-weight:800;line-height:1.05;margin:0;letter-spacing:.01em}
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:1.02;margin:0;letter-spacing:.005em}
 p{margin:0}
-.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
 
 /* header */
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--line)}
-header.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 16px;min-height:60px}
-.logo{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:.02em}
-nav{display:flex;gap:4px}
-nav button{background:none;border:0;border-bottom:3px solid transparent;padding:18px 10px 12px;color:var(--muted);font-weight:500}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 20px;min-height:64px}
+.logo{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:.01em}
+.logo::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-left:3px}
+nav{display:flex;gap:2px}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:20px 12px 14px;color:var(--muted);font-weight:500}
+nav button:hover{color:var(--ink)}
 nav button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
 
-main{padding:36px 0 80px}
-.lede{color:var(--muted);max-width:60ch;margin-top:10px}
-.pagehead{margin-bottom:26px}
-.pagehead h1{font-size:clamp(40px,8vw,64px)}
+main{padding:40px 0 96px}
+.lede{color:var(--muted);max-width:62ch;margin-top:12px;font-size:17px}
+.pagehead{margin-bottom:28px}
+.pagehead h1{font-size:clamp(40px,7.5vw,62px)}
+.eyebrow{display:block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
 
 /* buttons */
-.btn{background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:6px;padding:9px 16px;font-weight:700}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn.danger{background:transparent;color:var(--danger);border-color:var(--line)}
+.btn{background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:999px;padding:9px 18px;font-weight:700;transition:background .15s,border-color .15s,box-shadow .15s}
+.btn:hover{box-shadow:0 2px 10px rgba(14,107,71,.25)}
+.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--line-strong)}
+.btn.ghost:hover{border-color:var(--ink);box-shadow:none}
+.btn.danger{background:var(--surface);color:var(--danger);border-color:var(--line-strong)}
+.btn.danger:hover{border-color:var(--danger);box-shadow:none}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .link{background:none;border:0;padding:0;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
-.tiny{font-size:13px;padding:4px 8px;border-radius:5px}
+.tiny{font-size:13px;padding:4px 11px}
 
 /* toolbar */
-.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:8px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:transparent;border:1px solid var(--line);border-radius:999px;padding:5px 13px;color:var(--muted)}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--muted);font-weight:500}
+.chip:hover{border-color:var(--line-strong);color:var(--ink)}
+.chip[aria-pressed="true"],.chip[aria-current="page"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .spacer{flex:1}
 .check{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
 .check input{width:18px;height:18px;accent-color:var(--accent)}
 
-/* match list */
+/* cards: match lists, player lists and rankings sit on white */
 ul.list,ol.list{list-style:none;margin:0;padding:0}
+.list,.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
 .mrow{border-bottom:1px solid var(--line)}
-.mbtn{display:grid;grid-template-columns:104px 1fr 128px;align-items:center;gap:8px 12px;width:100%;background:none;border:0;padding:16px 4px;text-align:left}
-.mbtn:hover{background:var(--surface)}
+.mrow:last-child{border-bottom:0}
+.mbtn{display:grid;grid-template-columns:104px 1fr 128px;align-items:center;gap:8px 12px;width:100%;background:none;border:0;padding:16px 18px;text-align:left}
+.mbtn:hover{background:#FBFAF7}
 .mdate{font-size:13px;color:var(--muted);line-height:1.35}
 .mteams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
 .th{text-align:right;font-weight:500}
 .ta{text-align:left;font-weight:500}
-.sc{font-family:var(--display);font-weight:800;font-size:34px;letter-spacing:.04em;min-width:76px;text-align:center}
+.sc{font-family:var(--display);font-weight:800;font-size:32px;letter-spacing:.04em;min-width:78px;text-align:center;background:var(--sunk);border-radius:10px;padding:2px 10px;line-height:1.15}
 .win{font-weight:700}
 .mmine{justify-self:end;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
-.mmine .logit{border:1px solid var(--line);border-radius:5px;padding:3px 10px;color:var(--ink)}
+.mmine .logit{border:1px solid var(--line-strong);border-radius:999px;padding:3px 12px;color:var(--ink);font-weight:500}
 @media (max-width:600px){
-  .mbtn{grid-template-columns:1fr auto;grid-template-areas:"d m" "t t"}
+  .mbtn{grid-template-columns:1fr auto;grid-template-areas:"d m" "t t";padding:14px}
   .mdate{grid-area:d}.mmine{grid-area:m}.mteams{grid-area:t}
-  .sc{font-size:30px;min-width:64px}
+  .sc{font-size:28px;min-width:64px}
 }
 
 /* stars */
@@ -106,44 +104,68 @@ ul.list,ol.list{list-style:none;margin:0;padding:0}
 .rv{color:var(--muted);min-width:70px}
 
 /* forms */
-label.f{display:block;font-weight:700;margin:16px 0 6px}
-input[type=text],input[type=email],input[type=password],input[type=search],input[type=date],input[type=number],select,textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
+label.f,p.f{display:block;font-weight:700;margin:16px 0 6px}
+input[type=text],input[type=email],input[type=password],input[type=search],input[type=date],input[type=number],select,textarea{width:100%;background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:3px solid var(--accent-soft);outline-offset:0}
 textarea{min-height:96px;resize:vertical}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.addp{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:26px}
+.addp{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
 .addp label.f{margin-top:0}
 @media (max-width:600px){.addp{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
 .note{color:var(--muted);font-size:14px}
 
 /* dialog */
-dialog{border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 32px)}
-dialog::backdrop{background:rgba(5,10,14,.6)}
-.dlg{padding:24px 24px 20px}
+dialog{border:0;border-radius:18px;background:var(--surface);color:var(--ink);padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 32px);box-shadow:0 20px 60px rgba(21,25,42,.25)}
+dialog::backdrop{background:rgba(21,25,42,.45);backdrop-filter:blur(2px)}
+.dlg{padding:26px 26px 22px}
 .dlg h2{font-size:36px}
 .dlg .sub{color:var(--muted);margin-top:4px}
 .dlg .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
 .dlg .actions .spacer{flex:1}
-.takes{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
-.takes h3{font-size:22px;margin-bottom:8px}
-.take{padding:8px 0;border-bottom:1px solid var(--line)}
+.take{padding:14px 18px;border-bottom:1px solid var(--line)}
 .take:last-child{border-bottom:0}
 .take b{font-weight:700}
 
 /* players */
-.prow{display:grid;grid-template-columns:1fr auto;gap:4px 14px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:14px 4px;text-align:left}
-.prow:hover{background:var(--surface)}
+.prow{display:grid;grid-template-columns:1fr auto;gap:4px 14px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:14px 18px;text-align:left;color:inherit}
+.prow:last-child{border-bottom:0}
+.prow:hover{background:#FBFAF7}
 .pname{font-weight:700;font-size:17px}
 .pteam{color:var(--muted);font-size:14px}
 .pnote{grid-column:1/-1;color:var(--muted);font-size:14px}
+.pos{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);background:var(--sunk);border-radius:6px;padding:1px 6px;margin-left:8px;vertical-align:2px}
+.ratebtn{font-size:13px;color:var(--accent);font-weight:700}
+.posgroup{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 18px 8px;background:#FBFAF7;border-bottom:1px solid var(--line)}
+.clubbar{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin-bottom:16px}
+.clubbar>div{flex:1;min-width:220px}
+.clubbar label.f{margin-top:0}
+details.more{margin-top:28px}
+details.more summary{cursor:pointer;font-weight:700;color:var(--accent)}
+details.more .addp{margin-top:14px}
+
+/* rankings (players and clubs) */
+.rrow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:4px 14px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.rrow:last-child{border-bottom:0}
+.rrow .rk{font-size:30px;grid-row:auto}
+.rrow.fav{background:var(--accent-soft)}
+.rctl{display:flex;align-items:center;gap:6px}
+.rctl select{width:auto;padding:4px 8px;font-size:13px;border-radius:8px}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);padding:0;font-size:14px;line-height:1}
+.iconbtn:hover{border-color:var(--ink)}
+.iconbtn:disabled{opacity:.35;cursor:default}
+.favbadge{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);margin-left:8px}
+.clubpick{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:34px}
+.clubpick h2{font-size:28px}
+.supports{display:inline-flex;align-items:center;gap:6px;margin-top:12px;background:var(--accent-soft);color:var(--accent);font-weight:700;border-radius:999px;padding:4px 12px;font-size:14px}
 
 /* profile */
 .phead h1{font-size:clamp(44px,9vw,72px)}
 .phead p{color:var(--muted);margin-top:10px}
-.sect{margin-top:46px}
+.sect{margin-top:48px}
 .sect>h2{font-size:30px;margin-bottom:16px}
 .tops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 @media (max-width:640px){.tops{grid-template-columns:1fr}}
-.stub{position:relative;display:grid;grid-template-columns:1fr 104px;background:var(--surface);border:1px solid var(--line);border-radius:10px;min-height:160px}
+.stub{position:relative;display:grid;grid-template-columns:1fr 104px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-height:160px}
 .stub::before,.stub::after{content:"";position:absolute;right:95px;width:18px;height:18px;border-radius:50%;background:var(--bg);border:1px solid var(--line)}
 .stub::before{top:-10px;clip-path:inset(50% 0 0 0)}
 .stub::after{bottom:-10px;clip-path:inset(0 0 50% 0)}
@@ -158,109 +180,110 @@ dialog::backdrop{background:rgba(5,10,14,.6)}
 .stub-side .big{font-family:var(--display);font-weight:800;font-size:44px;line-height:1}
 .stub-side .stars{gap:1px;flex-wrap:wrap;justify-content:center;max-width:84px}
 .stub-side .mode{font-size:12px;color:var(--muted);line-height:1.25}
-.empty-slot{display:flex;align-items:center;justify-content:center;min-height:160px;border:2px dashed var(--line);border-radius:10px;color:var(--muted);background:none;width:100%}
+.empty-slot{display:flex;align-items:center;justify-content:center;min-height:160px;border:2px dashed var(--line-strong);border-radius:var(--radius);color:var(--muted);background:transparent;width:100%}
+.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
 ol.ranks{list-style:none;margin:0;padding:0}
-.rank{display:grid;grid-template-columns:48px 1fr auto;gap:2px 14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
-.rk{font-family:var(--display);font-weight:800;font-size:44px;line-height:1;color:var(--accent);grid-row:span 2}
+.rank{display:grid;grid-template-columns:48px 1fr auto;gap:2px 14px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.rank:last-child{border-bottom:0}
+.rk{font-family:var(--display);font-weight:800;font-size:40px;line-height:1;color:var(--accent);grid-row:span 2}
 .rank .pnote{grid-column:2/-1}
 .rank .ctl{display:flex;gap:6px}
-.diary-row{padding:14px 0;border-bottom:1px solid var(--line)}
+.diary-row{padding:14px 18px;border-bottom:1px solid var(--line)}
+.diary-row:last-child{border-bottom:0}
 .diary-row .t{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
 .diary-row .t b{font-weight:700}
 .diary-row p{color:var(--muted);margin-top:4px;max-width:70ch}
 
-/* people */
-.panel{border-left:4px solid var(--accent);padding:4px 0 4px 16px;margin-bottom:32px}
+/* panels and people */
+.panel{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:32px}
 .panel h2{font-size:28px;margin-bottom:6px}
-.frow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.frow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.frow:last-child{border-bottom:0}
 .frow b{font-size:17px}
 .status{margin-top:8px;font-size:14px;color:var(--muted)}
 .status.err{color:var(--danger)}
-.empty{padding:34px 0;color:var(--muted)}
+.empty{padding:30px 0;color:var(--muted)}
 
 /* accounts */
 .hright{display:flex;align-items:center;gap:12px}
-.themebtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);padding:0}
-.themebtn:hover{border-color:var(--ink)}
-.themebtn svg{width:18px;height:18px}
 .acct{display:flex;align-items:center;gap:10px;font-size:14px}
 .acct .who{background:none;border:0;padding:0;font-weight:700;color:var(--ink)}
 @media (max-width:640px){
   header.top .wrap{padding-top:8px}
   .hright{order:1}
   nav{order:2;width:100%;overflow-x:auto}
+  nav button{padding:14px 10px 12px}
 }
 a.btn{display:inline-block;text-decoration:none}
 .formerr{margin-top:12px;font-size:14px;color:var(--danger)}
 .formerr:empty{display:none}
 .formerr.ok{color:var(--accent)}
-.sharelink{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.sharelink{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:12px}
 .sharelink a{color:var(--accent);font-weight:700;word-break:break-all}
 .panel .btns,.lhead .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* match rows as links, match page */
 a.mbtn{color:inherit;text-decoration:none}
-a.mbtn:hover{background:var(--surface)}
-.sc.vs{font-size:22px;color:var(--muted)}
-.tag{font-size:13px;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:2px 10px;font-weight:700}
+.sc.vs{font-size:20px;color:var(--muted);background:transparent}
+.tag{font-size:13px;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;font-weight:700}
 .heart{color:var(--muted);font-size:16px;line-height:1}
 .heart.on{color:var(--danger)}
-.mrow.ranked{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 10px}
-.lrk{font-family:var(--display);font-weight:800;font-size:30px;color:var(--accent);min-width:34px;text-align:right}
+.mrow.ranked{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 10px;padding-right:14px}
+.lrk{font-family:var(--display);font-weight:800;font-size:30px;color:var(--accent);min-width:44px;text-align:right}
 .lctl{display:flex;gap:6px}
-.mhero{border-bottom:1px solid var(--line);padding-bottom:26px}
+.mhero{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px 26px;text-align:center}
 .mmeta{color:var(--muted)}
 .mscore{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin-top:14px;font-family:var(--body);font-weight:500;font-size:clamp(18px,3.4vw,26px);line-height:1.2}
-.mscore .th{text-align:right}.mscore .win{font-weight:800}
-.sc.big{font-family:var(--display);font-weight:800;font-size:clamp(56px,12vw,96px);letter-spacing:.03em;line-height:1}
+.mscore .th{text-align:right}.mscore .ta{text-align:left}.mscore .win{font-weight:800}
+.sc.big{font-family:var(--display);font-weight:800;font-size:clamp(56px,12vw,96px);letter-spacing:.03em;line-height:1;background:transparent;padding:0}
 .sc.big.vs{font-size:clamp(32px,7vw,48px)}
-.mactions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.btn[aria-pressed="true"]{border-color:var(--accent)}
+.mactions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .who-link{color:var(--ink);font-weight:700;text-decoration:none}
 .take p{margin-top:4px;color:var(--muted);max-width:70ch}
 
 /* profile sections */
-.subnav{margin-top:22px;padding-bottom:4px}
+.subnav{margin-top:24px;margin-bottom:6px}
 .subnav .chip{text-decoration:none}
-.subnav .chip[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.subhead{font-size:22px;margin:30px 0 4px}
+.subhead{font-size:22px;margin:30px 0 10px}
 .dday{font-size:13px;color:var(--muted);min-width:96px}
 .mlink{color:var(--ink);font-weight:700;text-decoration:none}
 .mlink:hover,.stub-meta:hover{text-decoration:underline}
 a.stub-meta{text-decoration:none}
 .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:8px}
-.lcard{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;color:var(--ink);text-decoration:none;min-height:110px}
-.lcard:hover{border-color:var(--accent)}
+.lcard{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;color:var(--ink);text-decoration:none;min-height:116px;transition:transform .15s,border-color .15s}
+.lcard:hover{border-color:var(--accent);transform:translateY(-2px)}
 .lname{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.05}
 .ldesc{color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.lhead{margin-bottom:12px}
+.lhead{margin-bottom:16px}
 .lhead h2{font-size:clamp(32px,6vw,44px)}
 .picks{display:flex;flex-direction:column;gap:8px}
 
 /* stats */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:12px;margin-top:26px}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column}
 .tn{font-family:var(--display);font-weight:800;font-size:40px;line-height:1}
 .tl{color:var(--muted);font-size:14px;margin-top:4px}
-.vbars{display:flex;align-items:flex-end;gap:2px;height:120px;border-bottom:1px solid var(--line);margin-top:12px}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px}
+.vbars{display:flex;align-items:flex-end;gap:2px;height:120px;border-bottom:1px solid var(--line-strong);margin-top:12px}
 .vb{position:relative;flex:1;height:100%;display:flex;align-items:flex-end;outline-offset:0}
 .vb span{display:block;width:100%;background:var(--accent);border-radius:4px 4px 0 0}
 .vb:hover span,.vb:focus-visible span{opacity:.75}
-.vb[data-tip]:hover::after,.vb[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:12px;padding:4px 8px;border-radius:5px;white-space:nowrap;z-index:3;pointer-events:none}
+.vb[data-tip]:hover::after,.vb[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;white-space:nowrap;z-index:3;pointer-events:none}
 .vaxis{display:flex;gap:2px;font-size:12px;color:var(--muted);margin-top:6px}
 .vaxis span{flex:1;text-align:center}
 .vaxis.ends{justify-content:space-between}
 .vaxis.ends span{flex:none}
 .hbars{display:grid;grid-template-columns:minmax(0,11rem) minmax(0,1fr) auto;gap:10px 12px;align-items:center}
 .hl{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ht{height:12px}
+.ht{height:12px;background:var(--sunk);border-radius:0 4px 4px 0}
 .ht span{display:block;height:100%;background:var(--accent);border-radius:0 4px 4px 0}
 .hn{font-size:14px;color:var(--muted);min-width:2ch;text-align:right}
-@media (max-width:600px){.hbars{grid-template-columns:minmax(0,8rem) minmax(0,1fr) auto}.mrow.ranked{grid-template-columns:auto minmax(0,1fr)}.mrow.ranked .lctl{grid-column:2;padding-bottom:10px}}
+@media (max-width:600px){.hbars{grid-template-columns:minmax(0,8rem) minmax(0,1fr) auto}.mrow.ranked{grid-template-columns:auto minmax(0,1fr)}.mrow.ranked .lctl{grid-column:2;padding-bottom:10px}.rrow{grid-template-columns:30px minmax(0,1fr) auto;gap:4px 10px;padding:10px 12px}.rrow .rk{font-size:24px}.rctl{gap:4px}.rctl .stars{display:none}.iconbtn{width:30px;height:30px}}
 
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:50;max-width:calc(100vw - 32px);font-size:15px}
-@media (prefers-reduced-motion:no-preference){.toast{animation:fade .2s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;z-index:50;max-width:calc(100vw - 32px);font-size:15px;box-shadow:0 8px 24px rgba(21,25,42,.25)}
+@media (prefers-reduced-motion:no-preference){.toast{animation:fade .2s ease-out}@keyframes fade{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}}
 </style>
 </head>
 <body>
@@ -270,11 +293,11 @@ a.stub-meta{text-decoration:none}
     <nav aria-label="Main">
       <button data-act="tab" data-tab="matches">Matches</button>
       <button data-act="tab" data-tab="players">Players</button>
+      <button data-act="tab" data-tab="clubs">Clubs</button>
       <button data-act="tab" data-tab="profile">Profile</button>
       <button data-act="tab" data-tab="people">People</button>
     </nav>
     <div class="hright">
-      <button class="themebtn" id="themebtn" data-act="theme" type="button"></button>
       <div class="acct" id="acct"></div>
     </div>
   </div>
@@ -444,7 +467,7 @@ var MODES={live:'Watched live',replay:'Watched the replay',attended:'Was at the 
 var KEY='fulltime.v1';
 
 /* ---------- state ---------- */
-function blank(){return{logs:{},players:{},favM:[],favP:[],custom:[],likes:[],watch:[],lists:[]}}
+function blank(){return{logs:{},players:{},favM:[],favP:[],custom:[],likes:[],watch:[],lists:[],favTeam:'',trank:[],prank:[]}}
 var FKEY=/^\d{4}-\d\d-\d\d_[a-z0-9-]+_[a-z0-9-]+$/,LISTID=/^l[a-z0-9]{1,39}$/;
 function str(v,n){return typeof v==='string'?v.slice(0,n):''}
 function half(v){v=Number(v);return isFinite(v)?Math.max(0,Math.min(5,Math.round(v*2)/2)):0}
@@ -483,6 +506,9 @@ function clean(o){
       return{id:l.id,name:str(l.name,60)||'Untitled list',desc:str(l.desc,300),items:Array.isArray(l.items)?l.items.slice(0,100).map(function(x){return str(x,40)}).filter(Boolean):[],ts:Number(l.ts)||0};
     });
   }
+  out.favTeam=TEAMS.indexOf(o.favTeam)>=0?o.favTeam:'';
+  if(Array.isArray(o.trank)){var st={};out.trank=o.trank.filter(function(t){return TEAMS.indexOf(t)>=0&&!st[t]&&(st[t]=1)})}
+  if(Array.isArray(o.prank)){var sp={};out.prank=o.prank.map(function(x){return str(x,100)}).filter(function(x){return x&&!sp[x]&&(sp[x]=1)}).slice(0,100)}
   return out;
 }
 function load(){
@@ -491,8 +517,9 @@ function load(){
 }
 var S=load();
 // match: match page id; psub/listId: own profile section and open list; user/pubSub/pubList: a public profile.
-var V={tab:'matches',filter:'all',logged:false,match:null,psub:'overview',listId:null,user:null,pubSub:'overview',pubList:null};
+var V={tab:'matches',filter:'all',logged:false,ptab:'squads',club:'',match:null,psub:'overview',listId:null,user:null,pubSub:'overview',pubList:null};
 var MS={id:null,loading:false,logs:null,likes:0,err:''}; // other fans' ratings on the open match page
+var SQUADS=null,SQUADS_ERR=false; // squads.json, written by the weekly update
 var NAVS=0; // in-app hash navigations, so Back knows whether history.back() stays on this site
 var D=null;
 var SB=null,USER=null,ME=null,BOOT=true; // Supabase client, signed-in user, their profile row, waiting for first auth event
@@ -515,6 +542,7 @@ function delPlayer(id){saveLocal();if(ME)remote(SB.from('player_ratings').delete
 function putCustom(c){saveLocal();if(ME)remote(SB.from('custom_matches').upsert(customRow(c)))}
 function delCustom(id){saveLocal();if(ME)remote(SB.from('custom_matches').delete().eq('user_id',ME.id).eq('id',id))}
 function putFavs(){saveLocal();if(ME)remote(SB.from('profiles').update({fav_matches:S.favM,fav_players:S.favP}).eq('id',ME.id))}
+function putExtras(){saveLocal();if(ME)remote(SB.from('profiles').update({fav_team:S.favTeam,team_rank:S.trank,player_rank:S.prank}).eq('id',ME.id))}
 function putLike(id){saveLocal();if(ME)remote(SB.from('match_likes').upsert({user_id:ME.id,match_id:id}))}
 function delLike(id){saveLocal();if(ME)remote(SB.from('match_likes').delete().eq('user_id',ME.id).eq('match_id',id))}
 function putWatch(k){saveLocal();if(ME)remote(SB.from('watchlist').upsert({user_id:ME.id,fixture:k}))}
@@ -562,26 +590,8 @@ function render(){
   document.querySelectorAll('nav [data-tab]').forEach(function(b){b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false')});
   renderAcct();
   var m=$('#main');
-  m.innerHTML=V.match?matchPage(V.match):V.tab==='matches'?matchesView():V.tab==='players'?playersView():V.tab==='profile'?profileView():peopleView();
+  m.innerHTML=V.match?matchPage(V.match):V.tab==='matches'?matchesView():V.tab==='players'?playersView():V.tab==='clubs'?clubsView():V.tab==='profile'?profileView():peopleView();
 }
-// Theme: a saved choice in data-theme wins; otherwise the system setting decides.
-var DARKQ=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
-function isDark(){var t=document.documentElement.getAttribute('data-theme');return t?t==='dark':!!(DARKQ&&DARKQ.matches)}
-function paintTheme(){
-  var b=$('#themebtn'),dark=isDark();
-  b.innerHTML=dark
-    ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
-    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-  var label=dark?'Switch to light mode':'Switch to dark mode';
-  b.setAttribute('aria-label',label);b.title=label;
-}
-function toggleTheme(){
-  var t=isDark()?'light':'dark';
-  document.documentElement.setAttribute('data-theme',t);
-  try{localStorage.setItem('fulltime.theme',t)}catch(e){}
-  paintTheme();
-}
-if(DARKQ&&DARKQ.addEventListener)DARKQ.addEventListener('change',paintTheme);
 
 function renderAcct(){
   var a=$('#acct');
@@ -633,20 +643,121 @@ function matchesView(){
   return h;
 }
 
+/* ---------- players, clubs and rankings ---------- */
+var POS={GK:'Goalkeepers',DEF:'Defenders',MID:'Midfielders',FWD:'Forwards','':'Others'};
+function pid(name,team){return slug(name)+'|'+slug(team)}
+function rankedPlayers(d){return d.prank.filter(function(id){return d.players[id]})}
+// Clubs the user has ranked, then the rest A–Z.
+function teamOrder(d){
+  var r=d.trank.filter(function(t){return TEAMS.indexOf(t)>=0});
+  return r.concat(TEAMS.filter(function(t){return r.indexOf(t)<0}).sort(function(a,b){return a.localeCompare(b)}));
+}
+function rankMove(kind,key,to){
+  var arr=kind==='team'?teamOrder(S):rankedPlayers(S),i=arr.indexOf(key);
+  if(i<0)return;
+  to=Math.max(0,Math.min(arr.length-1,to));
+  arr.splice(i,1);arr.splice(to,0,key);
+  if(kind==='team')S.trank=arr;else S.prank=arr;
+  putExtras();render();
+}
+// One row of an editable ranking: number, label, position picker, up/down (and remove for players).
+function rankRow(i,n,label,extra,kind,key,fav,name){
+  var opts='';for(var j=1;j<=n;j++)opts+='<option value="'+j+'"'+(j===i+1?' selected':'')+'>'+j+'</option>';
+  return '<li class="rrow'+(fav?' fav':'')+'"><span class="rk" aria-hidden="true">'+(i+1)+'</span><span>'+label+'</span><span class="rctl">'+extra
+    +'<select class="rankpos" data-kind="'+kind+'" data-key="'+esc(key)+'" aria-label="Rank for '+esc(name)+'">'+opts+'</select>'
+    +'<button class="iconbtn" data-act="rank-move" data-kind="'+kind+'" data-key="'+esc(key)+'" data-dir="-1" aria-label="Move '+esc(name)+' up"'+(i===0?' disabled':'')+'>↑</button>'
+    +'<button class="iconbtn" data-act="rank-move" data-kind="'+kind+'" data-key="'+esc(key)+'" data-dir="1" aria-label="Move '+esc(name)+' down"'+(i===n-1?' disabled':'')+'>↓</button>'
+    +(kind==='player'?'<button class="iconbtn" data-act="rank-del" data-key="'+esc(key)+'" aria-label="Remove '+esc(name)+' from ranking">✕</button>':'')
+    +'</span></li>';
+}
+
 function playersView(){
+  var nRated=Object.keys(S.players).filter(function(k){return S.players[k].rating>0}).length,nRank=rankedPlayers(S).length;
+  var h='<div class="pagehead"><span class="eyebrow">Players</span><h1>Rate the season’s players</h1><p class="lede">Browse each club’s squad, give players your own rating, and rank the best of the season. It’s your opinion, so there’s no wrong answer.</p></div>';
+  h+='<div class="chips subnav" style="margin-bottom:20px">'
+    +[['squads','Squads'],['rated','My ratings'+(nRated?' ('+nRated+')':'')],['ranking','Season ranking'+(nRank?' ('+nRank+')':'')]].map(function(t){
+      return '<button class="chip" data-act="ptab" data-p="'+t[0]+'"'+(V.ptab===t[0]?' aria-current="page"':'')+'>'+t[1]+'</button>';
+    }).join('')+'</div>';
+  if(V.ptab==='rated')h+=ratedHTML();
+  else if(V.ptab==='ranking')h+=prankHTML();
+  else h+=squadsHTML();
+  return h;
+}
+function addPlayerForm(open){
+  return '<details class="more"'+(open?' open':'')+'><summary>Missing someone? Add a player by hand</summary><div class="addp">'
+    +'<div><label class="f" for="pn">Player name</label><input type="text" id="pn" maxlength="60" autocomplete="off"></div>'
+    +'<div><label class="f" for="pt">Club</label><select id="pt">'+teamOptions(V.club||S.favTeam||'')+'</select></div>'
+    +'<button class="btn" data-act="add-player">Add player</button></div></details>';
+}
+function squadsHTML(){
+  if(!SQUADS)return SQUADS_ERR?'<p class="empty">Squad lists arrive with the next weekly update. Until then you can add players by hand.</p>'+addPlayerForm(true):'<p class="empty">Loading squads…</p>';
+  var clubs=TEAMS.filter(function(t){return SQUADS.teams[t]}).sort(function(a,b){return a.localeCompare(b)});
+  if(!clubs.length)return '<p class="empty">No squads are listed yet.</p>'+addPlayerForm(true);
+  var club=V.club||S.favTeam;
+  if(clubs.indexOf(club)<0)club=clubs[0];
+  var h='<div class="clubbar"><div><label class="f" for="club-pick">Club</label><select id="club-pick">'
+    +clubs.map(function(t){return '<option'+(t===club?' selected':'')+'>'+esc(t)+'</option>'}).join('')+'</select></div>'
+    +(S.favTeam&&club!==S.favTeam&&clubs.indexOf(S.favTeam)>=0?'<button class="btn ghost tiny" data-act="club-mine">Back to '+esc(S.favTeam)+'</button>':'')+'</div>';
+  var squad=SQUADS.teams[club]||[];
+  h+='<div class="list">';
+  ['GK','DEF','MID','FWD',''].forEach(function(g){
+    var ps=squad.filter(function(p){return (p.pos||'')===g});
+    if(!ps.length)return;
+    h+='<div class="posgroup">'+POS[g]+'</div>';
+    ps.forEach(function(p){
+      var id=pid(p.name,club),r=S.players[id],rk=S.prank.indexOf(id);
+      h+='<button class="prow" data-act="open-squad" data-team="'+esc(club)+'" data-name="'+esc(p.name)+'"><span><span class="pname">'+esc(p.name)+'</span>'
+        +(rk>=0?'<span class="favbadge">#'+(rk+1)+' this season</span>':'')+'</span><span>'+(r&&r.rating?starsHTML(r.rating):'<span class="ratebtn">Rate</span>')+'</span>'
+        +(r&&r.note?'<span class="pnote">'+esc(r.note)+'</span>':'')+'</button>';
+    });
+  });
+  return h+'</div>'+addPlayerForm(false);
+}
+function ratedHTML(){
   var ps=Object.keys(S.players).map(function(k){return S.players[k]});
   ps.sort(function(a,b){return b.rating-a.rating||a.name.localeCompare(b.name)});
-  var h='<div class="pagehead"><h1>Players</h1><p class="lede">Add the players you want to rate this season, then give each one your own score. It’s your opinion, so there’s no wrong answer.</p></div>';
-  h+='<div class="addp"><div><label class="f" for="pn">Player name</label><input type="text" id="pn" maxlength="60" autocomplete="off"></div>'
-    +'<div><label class="f" for="pt">Club</label><select id="pt">'+teamOptions('')+'</select></div>'
-    +'<button class="btn" data-act="add-player">Add player</button></div>';
-  if(!ps.length){h+='<p class="empty">No players yet. Type a name above and pick their club.</p>'}
-  else{
-    ps.forEach(function(p){
-      h+='<button class="prow" data-act="open-player" data-id="'+esc(p.id)+'"><span><span class="pname">'+esc(p.name)+'</span><br><span class="pteam">'+esc(p.team)+'</span></span><span>'+(p.rating?starsHTML(p.rating):'<span class="note">Not rated</span>')+'</span>'+(p.note?'<span class="pnote">'+esc(p.note)+'</span>':'')+'</button>';
-    });
-  }
-  return h;
+  if(!ps.length)return '<p class="empty">You haven’t rated anyone yet. Pick a club under Squads and tap a player.</p>';
+  return '<div class="list">'+ps.map(function(p){
+    return '<button class="prow" data-act="open-player" data-id="'+esc(p.id)+'"><span><span class="pname">'+esc(p.name)+'</span><br><span class="pteam">'+esc(p.team)+'</span></span><span>'+(p.rating?starsHTML(p.rating):'<span class="note">Not rated</span>')+'</span>'+(p.note?'<span class="pnote">'+esc(p.note)+'</span>':'')+'</button>';
+  }).join('')+'</div>';
+}
+function prankHTML(){
+  var ids=rankedPlayers(S);
+  var h='<div class="toolbar"><p class="note" style="flex:1;min-width:240px">Your players of the season, best first. Add someone from their rating window, or start from your highest ratings.</p>'
+    +'<button class="btn ghost tiny" data-act="prank-fill">Add my top-rated players</button></div>';
+  if(!ids.length)return h+'<p class="empty">No one in your ranking yet.</p>';
+  return h+'<ol class="list">'+ids.map(function(id,i){
+    var p=S.players[id];
+    return rankRow(i,ids.length,'<span class="pname">'+esc(p.name)+'</span> <span class="pteam">'+esc(p.team)+'</span>',p.rating?starsHTML(p.rating):'','player',id,false,p.name);
+  }).join('')+'</ol>';
+}
+
+function clubsView(){
+  var order=teamOrder(S),ranked=S.trank.length>0;
+  var h='<div class="pagehead"><span class="eyebrow">Clubs</span><h1>Your club, your table</h1><p class="lede">Pick the club you support, then rank all '+TEAMS.length+' Champions League sides from best to worst this season.</p></div>';
+  h+='<section class="clubpick"><h2>Your club</h2><label class="f" for="fav-team">Club you support</label><select id="fav-team"><option value="">Not picked yet</option>'
+    +TEAMS.slice().sort(function(a,b){return a.localeCompare(b)}).map(function(t){return '<option'+(t===S.favTeam?' selected':'')+'>'+esc(t)+'</option>'}).join('')+'</select>'
+    +'<p class="note" style="margin-top:8px">It shows on your profile, and the Players tab opens on its squad.</p></section>';
+  h+='<div class="toolbar"><h2 style="font-size:30px">Season ranking</h2><span class="spacer"></span>'+(ranked?'<button class="btn ghost tiny" data-act="trank-reset">Reset to A–Z</button>':'')+'</div>';
+  if(!ranked)h+='<p class="note" style="margin-bottom:12px">Not ranked yet, so clubs are in alphabetical order. Move any club and your ranking is saved.</p>';
+  return h+'<ol class="list">'+order.map(function(t,i){
+    return rankRow(i,order.length,'<span class="pname">'+esc(t)+'</span>'+(t===S.favTeam?'<span class="favbadge">Your club</span>':''),'','team',t,t===S.favTeam,t);
+  }).join('')+'</ol>';
+}
+function rankingsHTML(d,o){
+  var ps=rankedPlayers(d);
+  var h='<section class="sect"><h2>Players of the season</h2>';
+  if(ps.length)h+='<ol class="list">'+ps.map(function(id,i){
+    var p=d.players[id];
+    return '<li class="rrow"><span class="rk" aria-hidden="true">'+(i+1)+'</span><span><span class="pname">'+esc(p.name)+'</span> <span class="pteam">'+esc(p.team)+'</span></span><span>'+(p.rating?starsHTML(p.rating):'')+'</span></li>';
+  }).join('')+'</ol>';
+  else h+='<p class="empty">'+(o.isMe?'No player ranking yet. Build one under Players > Season ranking.':'No player ranking yet.')+'</p>';
+  h+='</section><section class="sect"><h2>Club ranking</h2>';
+  if(d.trank.length)h+='<ol class="list">'+teamOrder(d).map(function(t,i){
+    return '<li class="rrow'+(t===d.favTeam?' fav':'')+'"><span class="rk" aria-hidden="true">'+(i+1)+'</span><span class="pname">'+esc(t)+'</span><span>'+(t===d.favTeam?'<span class="favbadge">Supports</span>':'')+'</span></li>';
+  }).join('')+'</ol>';
+  else h+='<p class="empty">'+(o.isMe?'No club ranking yet. Rank them on the Clubs tab.':'No club ranking yet.')+'</p>';
+  return h+'</section>';
 }
 
 /* ---------- match page ---------- */
@@ -681,14 +792,15 @@ function socialHTML(id){
   if(MS.err)return h+'<p class="status err">'+esc(MS.err)+'</p></section>';
   var rated=MS.logs.filter(function(x){return x.rating>0});
   h+='<p class="note">'+plural(rated.length,'rating')+' · liked by '+plural(MS.likes,'fan')+'</p>';
-  if(rated.length)h+=ratingBars(rated.map(function(x){return x.rating}),'fan');
+  if(rated.length)h+='<div class="chart" style="margin-top:12px">'+ratingBars(rated.map(function(x){return x.rating}),'fan')+'</div>';
   var revs=MS.logs.filter(function(x){return x.review});
   h+='</section><section class="sect"><h2>Reviews</h2>';
   if(!revs.length)return h+'<p class="empty">No reviews yet.'+(S.logs[id]&&S.logs[id].review?'':' Be the first: log it and say what you thought.')+'</p></section>';
+  h+='<div class="list">';
   revs.forEach(function(x){
     h+='<div class="take"><a class="who-link" href="#/u/'+esc(x.user)+'">@'+esc(x.user)+'</a> '+(x.rating?starsHTML(x.rating):'')+' <span class="note">'+esc(MODES[x.mode]||'')+'</span><p>'+esc(x.review)+'</p></div>';
   });
-  return h+'</section>';
+  return h+'</div></section>';
 }
 
 /* ---------- charts ---------- */
@@ -721,7 +833,7 @@ function ratingBars(ratings,unit){
 }
 
 /* ---------- profiles ---------- */
-var SECTIONS=[['overview','Profile'],['diary','Diary'],['likes','Likes'],['watchlist','Watchlist'],['lists','Lists'],['stats','Stats']];
+var SECTIONS=[['overview','Profile'],['diary','Diary'],['likes','Likes'],['watchlist','Watchlist'],['lists','Lists'],['rankings','Rankings'],['stats','Stats']];
 // o: {isMe, name, extra, sub, listId, user}. Own profile navigates with buttons, public ones with links.
 function profileHTML(d,o){
   var byId={};allMatches(d).forEach(function(m){byId[m.id]=m});
@@ -729,7 +841,7 @@ function profileHTML(d,o){
   var rated=logs.filter(function(id){return d.logs[id].rating>0});
   var avg=rated.length?rated.reduce(function(s,id){return s+d.logs[id].rating},0)/rated.length:0;
   var nPlayers=Object.keys(d.players).length;
-  var h='<div class="phead"><h1>'+esc(o.name)+'</h1><p>'+plural(logs.length,'match')+' logged'+(rated.length?', averaging '+avg.toFixed(1)+' stars':'')+'. '+plural(nPlayers,'player')+' rated. '+plural(d.likes.length,'like')+'. '+plural(d.lists.length,'list')+'.</p>'+(o.extra||'')+'</div>';
+  var h='<div class="phead"><h1>'+esc(o.name)+'</h1><p>'+plural(logs.length,'match')+' logged'+(rated.length?', averaging '+avg.toFixed(1)+' stars':'')+'. '+plural(nPlayers,'player')+' rated. '+plural(d.likes.length,'like')+'. '+plural(d.lists.length,'list')+'.</p>'+(d.favTeam?'<span class="supports">Supports '+esc(d.favTeam)+'</span>':'')+(o.extra||'')+'</div>';
   h+='<div class="chips subnav" role="navigation" aria-label="Profile sections">';
   SECTIONS.forEach(function(s){
     var cur=o.sub===s[0]?' aria-current="page"':'';
@@ -742,6 +854,7 @@ function profileHTML(d,o){
   else if(sub==='likes')h+=likesHTML(d,o,byId);
   else if(sub==='watchlist')h+=watchlistHTML(d,o);
   else if(sub==='lists')h+=o.listId?listPageHTML(d,o,byId):listsHTML(d,o);
+  else if(sub==='rankings')h+=rankingsHTML(d,o);
   else if(sub==='stats')h+=statsHTML(d,byId);
   else h+=overviewHTML(d,o,byId);
   return h;
@@ -778,7 +891,7 @@ function overviewHTML(d,o,byId){
   h+='<section class="sect"><h2>Top four players</h2>';
   var fp=d.favP.filter(function(id){return d.players[id]}).slice(0,4);
   if(fp.length){
-    h+='<ol class="ranks">';
+    h+='<ol class="ranks list">';
     fp.forEach(function(id,i){
       var p=d.players[id];
       h+='<li class="rank"><span class="rk" aria-hidden="true">'+(i+1)+'</span><span><span class="pname">'+esc(p.name)+'</span> <span class="pteam">'+esc(p.team)+'</span></span><span class="ctl">'+(p.rating?starsHTML(p.rating):'')
@@ -797,13 +910,14 @@ function diaryHTML(d,o,byId,limit,brief){
   var logs=Object.keys(d.logs).filter(function(id){return byId[id]}).map(function(id){return[id,d.logs[id]]});
   logs.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0)});
   if(!logs.length)return '<p class="empty">'+(o.isMe?'Nothing logged yet. Open a match and give it some stars.':'Nothing logged yet.')+'</p>';
-  var h='';
+  var h='<div class="list">';
   logs.slice(0,limit).forEach(function(x){
     var m=byId[x[0]],l=x[1],title=esc(matchTitle(m));
     var linkable=m.id.charAt(0)!=='c'||o.isMe;
     h+='<div class="diary-row"><div class="t">'+(l.ts?'<span class="dday">'+esc(fmtTs(l.ts))+'</span>':'')+(linkable?'<a class="mlink" href="#/m/'+esc(m.id)+'">'+title+'</a>':'<b>'+title+'</b>')
       +(l.rating?starsHTML(l.rating):'')+(d.likes.indexOf(m.id)>=0?'<span class="heart on" role="img" aria-label="Liked">♥</span>':'')+'<span class="note">'+esc(MODES[l.mode]||'')+'</span></div>'+(l.review?'<p>'+esc(l.review)+'</p>':'')+'</div>';
   });
+  h+='</div>';
   if(brief&&logs.length>limit)h+='<p style="margin-top:14px">'+subLink(o,'diary','See all '+plural(logs.length,'entry'))+'</p>';
   return h;
 }
@@ -859,20 +973,20 @@ function statsHTML(d,byId){
   var h='<div class="tiles">'
     +tile(logs.length,'matches logged')+tile(avg,'average rating')+tile(reviews,reviews===1?'review':'reviews')
     +tile(d.likes.length,d.likes.length===1?'like':'likes')+tile(d.lists.length,d.lists.length===1?'list':'lists')+'</div>';
-  h+='<section class="sect"><h2>Ratings</h2>'+(ratings.length?ratingBars(ratings,'match'):'<p class="empty">No star ratings yet.</p>')+'</section>';
-  h+='<section class="sect"><h2>How you watched</h2>'+hbars(Object.keys(MODES).map(function(k){
+  h+='<section class="sect"><h2>Ratings</h2>'+(ratings.length?'<div class="chart">'+ratingBars(ratings,'match')+'</div>':'<p class="empty">No star ratings yet.</p>')+'</section>';
+  h+='<section class="sect"><h2>How you watched</h2><div class="chart">'+hbars(Object.keys(MODES).map(function(k){
     return{label:MODES[k],n:logs.filter(function(x){return x.l.mode===k}).length};
-  }),'match')+'</section>';
+  }),'match')+'</div></section>';
   var clubs={};
   logs.forEach(function(x){[x.m.home,x.m.away].forEach(function(t){clubs[t]=(clubs[t]||0)+1})});
   var top=Object.keys(clubs).map(function(t){return{label:t,n:clubs[t]}}).sort(function(a,b){return b.n-a.n||a.label.localeCompare(b.label)}).slice(0,8);
-  h+='<section class="sect"><h2>Most-watched clubs</h2>'+hbars(top,'match')+'</section>';
+  h+='<section class="sect"><h2>Most-watched clubs</h2><div class="chart">'+hbars(top,'match')+'</div></section>';
   var mds=[1,2,3,4,5,6,7,8];
   if(logs.some(function(x){return x.m.md===9}))mds.push(9);
-  h+='<section class="sect"><h2>Matches by round</h2>'+vbars(mds.map(function(md){
+  h+='<section class="sect"><h2>Matches by round</h2><div class="chart">'+vbars(mds.map(function(md){
     var n=logs.filter(function(x){return x.m.md===md}).length;
     return{n:n,label:md===9?'KO':'MD'+md,tip:mdLabel(md)+': '+plural(n,'match')};
-  }))+'</section>';
+  }))+'</div></section>';
   return h;
 }
 function tile(n,label){return '<div class="tile"><span class="tn">'+esc(n)+'</span><span class="tl">'+esc(label)+'</span></div>'}
@@ -912,10 +1026,10 @@ function peopleListHTML(){
   if(PEOPLE.err)return '<p class="status err">'+esc(PEOPLE.err)+'</p>';
   if(PEOPLE.list===null)return '<p class="empty">Loading…</p>';
   if(!PEOPLE.list.length)return '<p class="empty">'+(PEOPLE.q.trim()?'No one matches that username.':'No one has signed up yet.')+'</p>';
-  return PEOPLE.list.map(function(p){
+  return '<div class="list">'+PEOPLE.list.map(function(p){
     var u=esc(p.username);
     return '<div class="frow"><b>@'+u+(ME&&ME.username===p.username?' <span class="note">(you)</span>':'')+'</b><a class="btn ghost" href="#/u/'+u+'">View profile</a></div>';
-  }).join('');
+  }).join('')+'</div>';
 }
 function publicView(){
   var h='<p style="margin-bottom:18px"><a class="link" href="#/people">All people</a></p>';
@@ -958,17 +1072,19 @@ function openMatch(id){
   openDlg(h);
 }
 
-function openPlayer(id){
-  var p=S.players[id];if(!p)return;
-  var isFav=S.favP.indexOf(id)>=0;
+function openPlayer(id,proto){
+  var p=S.players[id]||proto;if(!p)return;
+  var isFav=S.favP.indexOf(id)>=0,inRank=S.prank.indexOf(id)>=0;
   var full=!isFav&&S.favP.length>=4;
-  D={type:'player',id:id,rating:p.rating||0};
+  D={type:'player',id:id,rating:p.rating||0,proto:S.players[id]?null:proto};
   openDlg('<h2>'+esc(p.name)+'</h2><p class="sub">'+esc(p.team)+'</p>'
     +'<label class="f">Your rating for this season</label>'+rateHTML()
     +'<label class="f" for="f-note">A line about them</label><textarea id="f-note" maxlength="200" placeholder="Why do they rate where they do?">'+esc(p.note||'')+'</textarea>'
     +'<label class="check" style="margin-top:14px"><input type="checkbox" id="f-fav"'+(isFav?' checked':'')+(full?' disabled':'')+'> Show in my top four players</label>'
     +(full?'<p class="note">Your top four is full. Remove one from your profile first.</p>':'')
-    +'<div class="actions"><button class="btn" data-act="save-player">Save</button><button class="btn ghost" data-act="close">Cancel</button><span class="spacer"></span><button class="btn danger" data-act="del-player">Remove player</button></div>');
+    +'<label class="check" style="margin-top:10px;display:flex"><input type="checkbox" id="f-rank"'+(inRank?' checked':'')+'> Include in my season ranking</label>'
+    +'<div class="actions"><button class="btn" data-act="save-player">Save</button><button class="btn ghost" data-act="close">Cancel</button><span class="spacer"></span>'
+    +(S.players[id]?'<button class="btn danger" data-act="del-player">Remove player</button>':'')+'</div>');
 }
 
 function openAddMatch(){
@@ -1052,6 +1168,22 @@ document.addEventListener('click',function(e){
     case 'filter':V.filter=t.dataset.f;render();break;
     case 'open-match':openMatch(id);break;
     case 'open-player':openPlayer(id);break;
+    case 'open-squad':{
+      var sq=t.dataset.team,sn=t.dataset.name,sid=slug(sn)+'|'+slug(sq);
+      openPlayer(sid,{id:sid,name:sn,team:sq,rating:0,note:''});break;}
+    case 'ptab':V.ptab=t.dataset.p;render();break;
+    case 'club-mine':V.club=S.favTeam;render();break;
+    case 'rank-move':{
+      var rk=t.dataset.kind,rarr=rk==='team'?teamOrder(S):rankedPlayers(S);
+      rankMove(rk,t.dataset.key,rarr.indexOf(t.dataset.key)+parseInt(t.dataset.dir,10));break;}
+    case 'rank-del':S.prank=S.prank.filter(function(x){return x!==t.dataset.key});putExtras();render();break;
+    case 'prank-fill':{
+      var add=Object.keys(S.players).map(function(k){return S.players[k]}).filter(function(p){return p.rating>0&&S.prank.indexOf(p.id)<0});
+      add.sort(function(a,b){return b.rating-a.rating||a.name.localeCompare(b.name)});
+      add=add.slice(0,Math.max(0,100-S.prank.length));
+      if(!add.length){toast('Every player you’ve rated is already in your ranking.');break}
+      S.prank=S.prank.concat(add.map(function(p){return p.id}));putExtras();render();toast('Added '+plural(add.length,'player'));break;}
+    case 'trank-reset':if(confirm('Reset your club ranking to alphabetical order?')){S.trank=[];putExtras();render()}break;
     case 'add-match-open':openAddMatch();break;
     case 'go-matches':V.tab='matches';render();window.scrollTo(0,0);break;
     case 'close':closeDlg();break;
@@ -1105,24 +1237,28 @@ document.addEventListener('click',function(e){
       putPlayer(pid);render();toast(name+' added. Tap them to give a rating.');
       break;}
     case 'save-player':{
-      var p=S.players[D.id];if(!p)break;
-      var f3=S.favP.join();
+      var p=S.players[D.id];
+      if(!p){if(!D.proto)break;p=S.players[D.id]=D.proto}
+      var f3=S.favP.join(),r3=S.prank.join();
       p.rating=D.rating;p.note=$('#f-note').value.trim().slice(0,200);
       var pf=$('#f-fav').checked,phas=S.favP.indexOf(p.id)>=0;
       if(pf&&!phas&&S.favP.length<4)S.favP.push(p.id);
       if(!pf&&phas)S.favP=S.favP.filter(function(x){return x!==p.id});
-      putPlayer(p.id);if(S.favP.join()!==f3)putFavs();
+      var pr=$('#f-rank').checked,rhas=S.prank.indexOf(p.id)>=0;
+      if(pr&&!rhas&&S.prank.length<100)S.prank.push(p.id);
+      if(!pr&&rhas)S.prank=S.prank.filter(function(x){return x!==p.id});
+      putPlayer(p.id);if(S.favP.join()!==f3)putFavs();if(S.prank.join()!==r3)putExtras();
       closeDlg();render();toast('Saved');
       break;}
     case 'del-player':{
-      var d3=D.id,f4=S.favP.join();delete S.players[d3];S.favP=S.favP.filter(function(x){return x!==d3});
-      delPlayer(d3);if(S.favP.join()!==f4)putFavs();
+      var d3=D.id,f4=S.favP.join(),r4=S.prank.join();delete S.players[d3];S.favP=S.favP.filter(function(x){return x!==d3});
+      S.prank=S.prank.filter(function(x){return x!==d3});
+      delPlayer(d3);if(S.favP.join()!==f4)putFavs();if(S.prank.join()!==r4)putExtras();
       closeDlg();render();toast('Player removed');break;}
     case 'favm-left':move(S.favM,id,-1);putFavs();render();break;
     case 'favm-del':S.favM=S.favM.filter(function(x){return x!==id});putFavs();render();break;
     case 'favp-up':move(S.favP,id,-1);putFavs();render();break;
     case 'favp-del':S.favP=S.favP.filter(function(x){return x!==id});putFavs();render();break;
-    case 'theme':toggleTheme();break;
     case 'back':if(NAVS>0)history.back();else{clearRoute();render()}break;
     case 'like':{
       var li=S.likes.indexOf(id);
@@ -1162,6 +1298,9 @@ document.addEventListener('click',function(e){
 document.addEventListener('change',function(e){
   var t=e.target;
   if(t.dataset&&t.dataset.act==='toggle-logged'){V.logged=t.checked;render()}
+  else if(t.id==='club-pick'){V.club=t.value;render()}
+  else if(t.id==='fav-team'){S.favTeam=t.value;putExtras();render();toast(t.value?'You support '+t.value+'.':'Club cleared.')}
+  else if(t.classList&&t.classList.contains('rankpos'))rankMove(t.dataset.kind,t.dataset.key,parseInt(t.value,10)-1);
 });
 var qTimer;
 document.addEventListener('input',function(e){
@@ -1190,7 +1329,7 @@ function fetchUserData(p){
     SB.from('lists').select('id,name,description,items,created_at').eq('user_id',p.id).order('created_at',{ascending:false}).limit(50)
   ]).then(function(r){
     r.forEach(function(x){if(x.error)throw x.error});
-    var o={logs:{},players:{},favM:p.fav_matches||[],favP:p.fav_players||[],custom:[],
+    var o={logs:{},players:{},favM:p.fav_matches||[],favP:p.fav_players||[],custom:[],favTeam:p.fav_team||'',trank:p.team_rank||[],prank:p.player_rank||[],
       likes:r[3].data.map(function(x){return x.match_id}),
       watch:r[4].data.map(function(x){return x.fixture}),
       lists:r[5].data.map(function(l){return{id:l.id,name:l.name,desc:l.description,items:l.items,ts:Date.parse(l.created_at)}})};
@@ -1213,7 +1352,7 @@ function importable(){
   var logs=Object.keys(d.logs).filter(function(id){return !S.logs[id]}).length;
   var players=Object.keys(d.players).filter(function(id){return !S.players[id]}).length;
   var extra=d.likes.some(function(id){return S.likes.indexOf(id)<0})||d.watch.some(function(k){return S.watch.indexOf(k)<0})
-    ||d.lists.some(function(l){return !listById(l.id)});
+    ||d.lists.some(function(l){return !listById(l.id)})||(d.favTeam&&!S.favTeam)||(d.trank.length&&!S.trank.length)||(d.prank.length&&!S.prank.length);
   return logs||players||extra?{d:d,logs:logs,players:players}:null;
 }
 function setImported(){try{localStorage.setItem(KEY+'.imported.'+ME.id,'1')}catch(e){}}
@@ -1229,6 +1368,9 @@ function doImport(){
   var watch=d.watch.filter(function(k){return S.watch.indexOf(k)<0});
   var lists=d.lists.filter(function(l){return !listById(l.id)}).slice(0,Math.max(0,50-S.lists.length));
   S.likes=likes.concat(S.likes);S.watch=S.watch.concat(watch);S.lists=S.lists.concat(lists);
+  if(!S.favTeam)S.favTeam=d.favTeam;
+  if(!S.trank.length)S.trank=d.trank.slice();
+  if(!S.prank.length)S.prank=d.prank.filter(function(id){return S.players[id]});
   Promise.all([
     likes.length?SB.from('match_likes').upsert(likes.map(function(id){return{user_id:ME.id,match_id:id}})):null,
     watch.length?SB.from('watchlist').upsert(watch.map(function(k){return{user_id:ME.id,fixture:k}})):null,
@@ -1236,7 +1378,7 @@ function doImport(){
     customs.length?SB.from('custom_matches').upsert(customs):null,
     logs.length?SB.from('match_logs').upsert(logs):null,
     players.length?SB.from('player_ratings').upsert(players):null,
-    SB.from('profiles').update({fav_matches:S.favM,fav_players:S.favP}).eq('id',ME.id)
+    SB.from('profiles').update({fav_matches:S.favM,fav_players:S.favP,fav_team:S.favTeam,team_rank:S.trank,player_rank:S.prank}).eq('id',ME.id)
   ]).then(function(rs){
     var bad=rs.filter(function(r){return r&&r.error});
     if(bad.length){console.error(bad);toast('Some ratings couldn’t be imported. Try again.');reloadMe();return}
@@ -1262,7 +1404,7 @@ function loadPeople(){
 function loadPublic(name){
   PUB={name:name,data:null,err:''};
   if(!SB){PUB.err='Accounts aren’t set up for this copy of Fulltime yet.';return}
-  SB.from('profiles').select('id,username,fav_matches,fav_players').eq('username',name).maybeSingle().then(function(r){
+  SB.from('profiles').select('*').eq('username',name).maybeSingle().then(function(r){
     if(r.error)throw r.error;
     if(!r.data){if(PUB.name===name)PUB.err='There’s no one called @'+name+'.';return}
     return fetchUserData(r.data).then(function(d){if(PUB.name===name)PUB.data=d});
@@ -1292,7 +1434,7 @@ function route(){
   if((m=h.match(/^#\/m\/([A-Za-z0-9_-]{1,140})$/))){
     V.match=m[1];
     if(SB&&/^m\d+$/.test(V.match))loadMatchSocial(V.match);
-  }else if((m=h.match(/^#\/u\/([A-Za-z0-9_]{3,20})(?:\/(diary|likes|watchlist|lists|stats))?(?:\/(l[a-z0-9]{1,39}))?$/))){
+  }else if((m=h.match(/^#\/u\/([A-Za-z0-9_]{3,20})(?:\/(diary|likes|watchlist|lists|rankings|stats))?(?:\/(l[a-z0-9]{1,39}))?$/))){
     var name=m[1].toLowerCase();
     V.tab='people';V.user=name;V.pubSub=m[2]||'overview';V.pubList=m[3]||null;
     if(prevUser!==name||PUB.name!==name||PUB.err)loadPublic(name);
@@ -1368,7 +1510,7 @@ function openUsername(){
 function submitUsername(){
   var u=$('#un').value.trim().toLowerCase(),msg=$('#un-msg'),user=USER;
   if(!/^[a-z0-9_]{3,20}$/.test(u)){msg.textContent='Use 3 to 20 lowercase letters, numbers or underscores.';return}
-  SB.from('profiles').insert({id:user.id,username:u}).select('id,username,fav_matches,fav_players').single().then(function(r){
+  SB.from('profiles').insert({id:user.id,username:u}).select('*').single().then(function(r){
     if(r.error){msg.textContent=r.error.code==='23505'?'That username is taken. Try another.':'Couldn’t save your username. Try again.';return}
     if(USER!==user)return;
     ME=r.data;S=blank();closeDlg();render();
@@ -1398,7 +1540,7 @@ function handleSession(session){
   BOOT=false;USER=u;ME=null;
   if(!u){S=load();render();return}
   S=blank();render();
-  SB.from('profiles').select('id,username,fav_matches,fav_players').eq('id',u.id).maybeSingle().then(function(r){
+  SB.from('profiles').select('*').eq('id',u.id).maybeSingle().then(function(r){
     if(USER!==u)return;
     if(r.error)throw r.error;
     if(!r.data){openUsername();return}
@@ -1422,9 +1564,12 @@ function initAuth(){
 }
 
 window.addEventListener('hashchange',function(){NAVS++;route()});
-paintTheme();
 initAuth();
 route();
+fetch('squads.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+  .then(function(d){SQUADS=d&&d.teams&&typeof d.teams==='object'?d:{teams:{}}})
+  .catch(function(){SQUADS_ERR=true})
+  .then(function(){if(V.tab==='players'&&!V.match&&!D)render()});
 })();
 </script>
 </body>

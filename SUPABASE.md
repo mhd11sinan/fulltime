@@ -44,6 +44,10 @@ Two things follow from that:
 
 The script also adds a trigger that creates each person's profile at the moment they sign up.
 
+**Updating an existing project:** when new features need database changes, they come as files in
+[`supabase/migrations/`](supabase/migrations/). Run each new one once in the SQL Editor the same way.
+`schema.sql` already includes them, so a fresh project only needs `schema.sql`.
+
 ## 3. Turn on username sign-in
 
 Open **Authentication > Sign In / Providers**:

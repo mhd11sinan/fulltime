@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Fetch results and update index.html
+      - name: Fetch results, fixtures and squads
         id: update
         env:
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
@@ -31,14 +31,15 @@ jobs:
       - name: Commit and push
         id: commit
         run: |
-          if git diff --quiet; then
+          git add index.html CLAUDE.md squads.json 2>/dev/null || git add index.html CLAUDE.md
+          if git diff --cached --quiet; then
             echo "Nothing to commit."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -am "${{ steps.update.outputs.message }}"
+          git commit -m "${{ steps.update.outputs.message }}"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
