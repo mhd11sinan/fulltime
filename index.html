@@ -310,7 +310,7 @@ a.stub-meta{text-decoration:none}
 (function(){
 'use strict';
 
-/* ---------- data: results through matchday 3 of 2026/27, appended by scripts/update_matches.py ---------- */
+/* ---------- data: results through matchday 4 of 2026/27, appended by scripts/update_matches.py ---------- */
 var TEAMS=['AEK Athens','Arsenal','Aston Villa','Atlético Madrid','Barcelona','Bayern München','Bodø/Glimt','Borussia Dortmund','Club Brugge','Como','Fenerbahçe','Feyenoord','Galatasaray','Inter','LASK','Lens','Lille','Liverpool','Manchester City','Manchester United','Napoli','Paris Saint-Germain','Porto','PSV Eindhoven','RB Leipzig','Real Betis','Real Madrid','Roma','Sabah','Shakhtar Donetsk','Slavia Praha','Slovan Bratislava','Sporting CP','Stuttgart','Villarreal','Viking'];
 var RAW=[
  [1,'2026-09-08','Aston Villa',3,'Club Brugge',2],
@@ -366,28 +366,28 @@ var RAW=[
  [3,'2026-10-21','Club Brugge',3,'Lens',0],
  [3,'2026-10-21','Aston Villa',3,'Viking',1],
  [3,'2026-10-21','Sporting CP',2,'LASK',3],
- [3,'2026-10-21','Real Betis',1,'Feyenoord',0]
+ [3,'2026-10-21','Real Betis',1,'Feyenoord',0],
+ [4,'2026-11-03','Shakhtar Donetsk',0,'Sporting CP',1],
+ [4,'2026-11-03','Galatasaray',2,'Stuttgart',0],
+ [4,'2026-11-03','Feyenoord',0,'Inter',3],
+ [4,'2026-11-03','Barcelona',3,'Aston Villa',0],
+ [4,'2026-11-03','Atlético Madrid',0,'Bayern München',2],
+ [4,'2026-11-03','Villarreal',0,'Paris Saint-Germain',6],
+ [4,'2026-11-03','Manchester United',3,'Roma',2],
+ [4,'2026-11-03','Bodø/Glimt',0,'Lille',0],
+ [4,'2026-11-03','LASK',4,'Slovan Bratislava',0],
+ [4,'2026-11-04','AEK Athens',2,'Real Madrid',3],
+ [4,'2026-11-04','Fenerbahçe',3,'Liverpool',2],
+ [4,'2026-11-04','RB Leipzig',2,'Manchester City',3],
+ [4,'2026-11-04','Slavia Praha',1,'Arsenal',2],
+ [4,'2026-11-04','PSV Eindhoven',1,'Club Brugge',2],
+ [4,'2026-11-04','Borussia Dortmund',2,'Real Betis',1],
+ [4,'2026-11-04','Porto',4,'Napoli',1],
+ [4,'2026-11-04','Lens',1,'Como',9],
+ [4,'2026-11-04','Viking',4,'Sabah',1]
 ];
 // Fixtures not played yet, rewritten on every run of scripts/update_matches.py: [md, 'YYYY-MM-DD', home, away]
 var UPCOMING=[
- [4,'2026-11-03','Shakhtar Donetsk','Sporting CP'],
- [4,'2026-11-03','Galatasaray','Stuttgart'],
- [4,'2026-11-03','Feyenoord','Inter'],
- [4,'2026-11-03','Barcelona','Aston Villa'],
- [4,'2026-11-03','Atlético Madrid','Bayern München'],
- [4,'2026-11-03','Villarreal','Paris Saint-Germain'],
- [4,'2026-11-03','Manchester United','Roma'],
- [4,'2026-11-03','Bodø/Glimt','Lille'],
- [4,'2026-11-03','LASK','Slovan Bratislava'],
- [4,'2026-11-04','AEK Athens','Real Madrid'],
- [4,'2026-11-04','Fenerbahçe','Liverpool'],
- [4,'2026-11-04','RB Leipzig','Manchester City'],
- [4,'2026-11-04','Slavia Praha','Arsenal'],
- [4,'2026-11-04','PSV Eindhoven','Club Brugge'],
- [4,'2026-11-04','Borussia Dortmund','Real Betis'],
- [4,'2026-11-04','Porto','Napoli'],
- [4,'2026-11-04','Lens','Como'],
- [4,'2026-11-04','Viking','Sabah'],
  [5,'2026-11-24','Galatasaray','Aston Villa'],
  [5,'2026-11-24','Bodø/Glimt','LASK'],
  [5,'2026-11-24','Real Madrid','PSV Eindhoven'],
@@ -629,7 +629,7 @@ function matchesView(){
     if(V.logged)list=list.filter(function(m){return S.logs[m.id]});
     list.sort(function(a,b){return b.date.localeCompare(a.date)||a.id.localeCompare(b.id)});
   }
-  var h='<div class="pagehead"><h1>Champions League 2026/27</h1><p class="lede">Log a match, give it stars, say what you thought. Results here run through matchday 3. If something newer has been played, add it yourself.</p></div>';
+  var h='<div class="pagehead"><h1>Champions League 2026/27</h1><p class="lede">Log a match, give it stars, say what you thought. Results here run through matchday 4. If something newer has been played, add it yourself.</p></div>';
   h+='<div class="toolbar"><div class="chips" role="group" aria-label="Filter by matchday"><button class="chip" data-act="filter" data-f="all" aria-pressed="'+(V.filter==='all')+'">All</button>';
   mds.forEach(function(md){h+='<button class="chip" data-act="filter" data-f="'+md+'" aria-pressed="'+(V.filter===String(md))+'">'+(md===9?'Knockouts':'MD '+md)+'</button>'});
   if(UP.length)h+='<button class="chip" data-act="filter" data-f="up" aria-pressed="'+up+'">Upcoming</button>';
